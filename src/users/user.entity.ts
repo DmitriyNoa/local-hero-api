@@ -16,7 +16,13 @@ class User {
   public lastName: string;
 
   @Column()
-  public location: Coordinates;
+  public latitude: string;
+
+  @Column()
+  public longitude: string;
+
+  @Column()
+  public radius: number;
 
   @Column()
   public rank: number;

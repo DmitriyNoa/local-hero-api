@@ -49,13 +49,10 @@ export class HelpRequestsService {
   constructor(private userService: UsersService) {
   }
 
-  findHero(helpRequest: Coordinates) {
-    const users = this.userService.getHeroes();
-
-    console.log(users);
-
-    const nearest = this.userService.getHeroes().filter((hero) => {
-      return isNear(calcCrow(hero.location, helpRequest), hero.radius);
+  async findHero(helpRequest: Coordinates) {
+    const users = await this.userService.getHeroes();
+    const nearest = users.filter((hero) => {
+      return isNear(calcCrow({lat: hero.latitude, lng: hero.longitude}, helpRequest), hero.radius);
     });
 
     return nearest;

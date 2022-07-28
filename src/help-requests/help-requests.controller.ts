@@ -6,7 +6,7 @@ export class HelpRequestsController {
   constructor(private readonly helpService: HelpRequestsService) {}
 
   @Post()
-  findHelp(@Body() helpRequest: Coordinates): any[] {
+  findHelp(@Body() helpRequest: Coordinates): Promise<any[]> {
     return this.helpService.findHero(helpRequest);
   }
 }

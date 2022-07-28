@@ -20,7 +20,7 @@ import * as Joi from '@hapi/joi';
         POSTGRES_PASSWORD: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
         PORT: Joi.number(),
-      })
+      }),
     }),
   ],
   controllers: [AppController],

@@ -7,8 +7,8 @@ export class UsersController {
   }
 
   @Get()
-  getHeroes() {
-    return this.usersService.getHeroes();
+  async getHeroes() {
+    return await this.usersService.getHeroes();
   }
 
   @Post()
