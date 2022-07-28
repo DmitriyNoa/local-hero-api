@@ -35,6 +35,10 @@ export interface Hero extends User {
 export class UsersService {
   private heroes: Hero[] = [];
 
+  constructor() {
+    console.log('Heroes', this.heroes);
+  }
+
   addHero(hero: Hero) {
     hero.id = uuidv4();
     this.heroes.push(hero);

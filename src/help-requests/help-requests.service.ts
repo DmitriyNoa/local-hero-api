@@ -9,9 +9,9 @@ interface Hero {
 }
 
 const heroes: Hero[] = [
-  {location: {lat: "52.50796806801554", lng: "13.417890450827027"}, radius: 2000, name: "Joe Anderseen", categories: ["auto", "mechanic"]},
-  {location: {lat: "52.52249803446815", lng: "13.388516252202493"}, radius: 3000, name: "Moe Robinson", categories: ["auto", "mechanic"]},
-  {location: {lat: "52.53234126769997", lng: "13.470748300223583"}, radius: 3000, name: "Steve Rojers", categories: ["auto", "mechanic"]},
+  //{location: {lat: "52.50796806801554", lng: "13.417890450827027"}, radius: 2000, name: "Joe Anderseen", categories: ["auto", "mechanic"]},
+  //{location: {lat: "52.52249803446815", lng: "13.388516252202493"}, radius: 3000, name: "Moe Robinson", categories: ["auto", "mechanic"]},
+  //{location: {lat: "52.53234126769997", lng: "13.470748300223583"}, radius: 3000, name: "Steve Rojers", categories: ["auto", "mechanic"]},
   {location: {lat: "52.50218186354066", lng: "13.45096285498009"}, radius: 3000, name: "Amalie Johnson", categories: ["auto", "mechanic"]}
 ];
 
@@ -46,11 +46,14 @@ function toRad(Value) {
 
 @Injectable()
 export class HelpRequestsService {
-
   constructor(private userService: UsersService) {
   }
 
   findHero(helpRequest: Coordinates) {
+    const users = this.userService.getHeroes();
+
+    console.log(users);
+
     const nearest = this.userService.getHeroes().filter((hero) => {
       return isNear(calcCrow(hero.location, helpRequest), hero.radius);
     });
