@@ -15,11 +15,11 @@ class User {
   @Column()
   public lastName: string;
 
-  @Column()
-  public latitude: string;
+  @Column({ type: 'decimal' })
+  public latitude: number;
 
-  @Column()
-  public longitude: string;
+  @Column({ type: 'decimal' })
+  public longitude: number;
 
   @Column()
   public radius: number;

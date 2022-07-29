@@ -50,11 +50,8 @@ export class HelpRequestsService {
   }
 
   async findHero(helpRequest: Coordinates) {
-    const users = await this.userService.getHeroes();
-    const nearest = users.filter((hero) => {
-      return isNear(calcCrow({lat: hero.latitude, lng: hero.longitude}, helpRequest), hero.radius);
-    });
+    const users = await this.userService.getClosestHeroes(helpRequest);
 
-    return nearest;
+    return users;
   }
 }
