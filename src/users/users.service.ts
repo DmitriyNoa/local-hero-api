@@ -46,4 +46,8 @@ export class UsersService {
   getHeroes() {
     return this.repository.find();
   }
+
+  async findOne(username: string) {
+    return this.repository.findOne({ where: [{ username }] });
+  }
 }

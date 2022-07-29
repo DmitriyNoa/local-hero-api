@@ -35,6 +35,9 @@ class User {
 
   @Column()
   public type: string;
+
+  @Column()
+  public password: string;
 }
 
 export default User;

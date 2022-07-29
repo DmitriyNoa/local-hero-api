@@ -1,14 +1,28 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Hero, UsersService } from './users.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {
-  }
+  constructor(private usersService: UsersService) {}
 
   @Get()
   async getHeroes() {
     return await this.usersService.getHeroes();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:username')
+  async getOne(@Param('username') username: string) {
+    return await this.usersService.findOne(username);
   }
 
   @Post()
