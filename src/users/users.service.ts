@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import UserEntity from './user.entity';
+import { hashPassword } from "../auth/encryption";
 
 export interface User {
   id?: string;
@@ -15,6 +16,7 @@ export interface User {
   status: 1 | 0;
   settings: any;
   type: string;
+  password: string;
 }
 
 export interface Hero extends User {
@@ -34,7 +36,10 @@ export class UsersService {
   ) {}
 
   async addHero(hero: Hero) {
-    const heroCreated = await this.repository.create(hero);
+    const { password } = hero;
+    const encrypted = await hashPassword(password);
+
+    const heroCreated = await this.repository.create({ ...hero, password: encrypted });
     await this.repository.save(heroCreated);
     return heroCreated;
   }
