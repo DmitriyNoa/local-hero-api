@@ -5,6 +5,7 @@ import { HelpRequestsModule } from './help-requests/help-requests.module';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -22,6 +23,7 @@ import * as Joi from '@hapi/joi';
         PORT: Joi.number(),
       }),
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
