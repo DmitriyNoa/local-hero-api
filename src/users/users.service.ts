@@ -67,13 +67,10 @@ export class UsersService {
     const appDataSource = await myDataSource.initialize();
     const queryRunner = await appDataSource.createQueryRunner();
 
-    const results = await queryRunner.manager.query(`select * from (
-SELECT  *,( 3959 * acos( cos( radians(6.414478) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${helpRequest.lat}) ) + sin( radians(${helpRequest.lng}) ) * sin( radians( latitude ) ) ) ) AS distance
+    const results = await queryRunner.manager.query(`SELECT *, point(${helpRequest.lat}, ${helpRequest.lng}) <@>  (point(longitude, latitude)::point) as distance
 FROM "user"
-) al
-where distance < 4000
-ORDER BY distance
-LIMIT 20;`);
+WHERE (point(${helpRequest.lat}, ${helpRequest.lng}) <@> point(longitude, latitude)) < 4000
+ORDER BY distance;`);
 
     return results;
   }
@@ -91,10 +88,34 @@ LIMIT 20;
 
   /*
 
+CREATE EXTENSION cube;
+CREATE EXTENSION earthdistance;
+
   SELECT *, point(52.50429790343473, 13.452538746743118) <@>  (point(longitude, latitude)::point) as distance
 FROM "user"
 WHERE (point(52.50429790343473, 13.452538746743118) <@> point(longitude, latitude)) < 4000
 ORDER BY distance;
+   */
+
+  /*
+
+  CREATE EXTENSION postgis;
+
+CREATE TABLE foo (
+  geog geography;
+);
+
+CREATE INDEX ON foo USING gist(geog);
+
+INSERT INTO foo (geog)
+  VALUES (ST_MakePoint(x,y));
+
+
+  SELECT *
+FROM foo
+WHERE ST_DWithin(foo.geog, ST_MakePoint(x,y)::geography, distance_in_meters)
+ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
+
    */
 
   async findOne(username: string) {
