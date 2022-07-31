@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
   postgres:
     container_name: postgres
-    image: postgres:alpine
+    image: postgis/postgis
     restart: always
     ports:
       - "5432:5432"

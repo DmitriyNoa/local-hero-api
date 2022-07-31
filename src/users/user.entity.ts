@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Coordinates } from '../help-requests/help-requests.service';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { Point } from 'geojson';
 
 @Entity()
 class User {
@@ -20,6 +20,15 @@ class User {
 
   @Column({ type: 'decimal' })
   public longitude: number;
+
+  @Index({ spatial: true })
+  @Column({
+    type: 'geography',
+    spatialFeatureType: 'Point',
+    srid: 4326,
+    nullable: true,
+  })
+  location: Point;
 
   @Column()
   public radius: number;

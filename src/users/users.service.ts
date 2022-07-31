@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import UserEntity from './user.entity';
 import { hashPassword } from '../auth/encryption';
 import { Coordinates } from '../help-requests/help-requests.service';
+import { Geometry, Point } from 'geojson';
 
 export interface User {
   id?: string;
@@ -38,9 +39,15 @@ export class UsersService {
     const { password } = hero;
     const encrypted = await hashPassword(password);
 
+    const pointObject: Point = {
+      type: 'Point',
+      coordinates: [hero.longitude, hero.latitude],
+    };
+
     const heroCreated = await this.repository.create({
       ...hero,
       password: encrypted,
+      location: pointObject,
     });
     await this.repository.save(heroCreated);
     return heroCreated;
@@ -55,6 +62,7 @@ export class UsersService {
   }
 
   async getClosestHeroes(helpRequest: Coordinates) {
+
     const myDataSource = new DataSource({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -67,10 +75,10 @@ export class UsersService {
     const appDataSource = await myDataSource.initialize();
     const queryRunner = await appDataSource.createQueryRunner();
 
-    const results = await queryRunner.manager.query(`SELECT *, point(${helpRequest.lat}, ${helpRequest.lng}) <@>  (point(longitude, latitude)::point) as distance
-FROM "user"
-WHERE (point(${helpRequest.lat}, ${helpRequest.lng}) <@> point(longitude, latitude)) < 4000
-ORDER BY distance;`);
+    const results = await queryRunner.manager.query(`SELECT * from "user" WHERE ST_Distance(
+ location,
+  'SRID=4326;POINT(${helpRequest.lng} ${helpRequest.lat})'::geography
+  ) < "user".radius;`);
 
     return results;
   }
