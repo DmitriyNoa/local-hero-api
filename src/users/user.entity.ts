@@ -1,4 +1,4 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { Point } from 'geojson';
 
 @Entity()
@@ -9,16 +9,16 @@ class User {
   @Column()
   public username: string;
 
-  @Column()
+  @Column({ nullable: true })
   public firstName: string;
 
-  @Column()
+  @Column({ nullable: true })
   public lastName: string;
 
-  @Column({ type: 'decimal' })
+  @Column({ type: 'decimal', nullable: true })
   public latitude: number;
 
-  @Column({ type: 'decimal' })
+  @Column({ type: 'decimal', nullable: true })
   public longitude: number;
 
   @Index({ spatial: true })
@@ -30,19 +30,19 @@ class User {
   })
   location: Point;
 
-  @Column()
+  @Column({ nullable: true })
   public radius: number;
 
-  @Column()
+  @Column({ default: 0 })
   public rank: number;
 
-  @Column()
+  @Column({ nullable: true })
   public avatar: string;
 
-  @Column()
+  @Column({ nullable: true })
   public status: number;
 
-  @Column()
+  @Column( { nullable: true } )
   public type: string;
 
   @Column()

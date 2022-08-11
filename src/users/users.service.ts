@@ -50,7 +50,11 @@ export class UsersService {
       location: pointObject,
     });
     await this.repository.save(heroCreated);
-    return heroCreated;
+
+    const pureHero = { ...heroCreated };
+    delete pureHero.password;
+
+    return pureHero;
   }
 
   removeHero(id: string) {
@@ -62,7 +66,6 @@ export class UsersService {
   }
 
   async getClosestHeroes(helpRequest: Coordinates) {
-
     const myDataSource = new DataSource({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -75,7 +78,8 @@ export class UsersService {
     const appDataSource = await myDataSource.initialize();
     const queryRunner = await appDataSource.createQueryRunner();
 
-    const results = await queryRunner.manager.query(`SELECT * from "user" WHERE ST_Distance(
+    const results = await queryRunner.manager
+      .query(`SELECT * from "user" WHERE ST_Distance(
  location,
   'SRID=4326;POINT(${helpRequest.lng} ${helpRequest.lat})'::geography
   ) < "user".radius;`);
