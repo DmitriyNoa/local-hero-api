@@ -2,12 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import UserEntity from './user.entity';
-import { hashPassword } from '../auth/encryption';
 import { Coordinates } from '../help-requests/help-requests.service';
-import { Geometry, Point } from 'geojson';
+import { Point } from 'geojson';
+
+import KcAdminClient from 'keycloak-admin';
+
+export const getKCClient = async () => {
+  const kcAdminClient = new KcAdminClient({
+    baseUrl: process.env.KEYCLOAK_BASE_URL,
+    realmName: process.env.KEYCLOAK_REALM_NAME,
+  });
+
+  await kcAdminClient.auth({
+    clientSecret: process.env.KEYCLOAK_SECRET,
+    grantType: 'password',
+    username: process.env.KEYCLOAK_USERNAME,
+    password: process.env.KEYCLOAK_PASSWORD,
+    clientId: process.env.KEYCLOAK_ADMIN_CLIENT_ID,
+  });
+
+  return kcAdminClient;
+};
 
 export interface User {
   id?: string;
+  email: string;
   username: string;
   firstName: string;
   lastName: string;
@@ -35,24 +54,37 @@ export class UsersService {
     private repository: Repository<UserEntity>,
   ) {}
 
-  async addHero(hero: Hero) {
-    const { password } = hero;
-    const encrypted = await hashPassword(password);
+  async addUser(user: Hero) {
+    const { password, username, email, firstName, lastName, ...restUser } =
+      user;
+
+    const ks = await getKCClient();
+
+    const kcUser = await ks.users.create({
+      realm: 'hero',
+      username: username,
+      email: email,
+      firstName,
+      lastName,
+      emailVerified: true,
+      credentials: [{ type: 'password', value: password, temporary: false }],
+      enabled: true,
+    });
 
     const pointObject: Point = {
       type: 'Point',
-      coordinates: [hero.longitude, hero.latitude],
+      coordinates: [user.longitude, user.latitude],
     };
 
     const heroCreated = await this.repository.create({
-      ...hero,
-      password: encrypted,
+      ...restUser,
+      user_id: kcUser.id,
       location: pointObject,
     });
+
     await this.repository.save(heroCreated);
 
     const pureHero = { ...heroCreated };
-    delete pureHero.password;
 
     return pureHero;
   }
@@ -131,6 +163,6 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
    */
 
   async findOne(username: string) {
-    return this.repository.findOne({ where: [{ username }] });
+    return this.repository.findOne({ where: [{ user_id: username }] });
   }
 }

@@ -26,8 +26,8 @@ export class UsersController {
   }
 
   @Post()
-  addHero(@Body() hero: Hero) {
-    return this.usersService.addHero(hero);
+  addUser(@Body() hero: Hero) {
+    return this.usersService.addUser(hero);
   }
 
   @Delete()

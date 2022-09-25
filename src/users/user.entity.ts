@@ -7,19 +7,8 @@ class User {
   public id: string;
 
   @Column()
-  public username: string;
-
-  @Column({ nullable: true })
-  public firstName: string;
-
-  @Column({ nullable: true })
-  public lastName: string;
-
-  @Column({ type: 'decimal', nullable: true })
-  public latitude: number;
-
-  @Column({ type: 'decimal', nullable: true })
-  public longitude: number;
+  @Index()
+  public user_id: string;
 
   @Index({ spatial: true })
   @Column({
@@ -42,11 +31,8 @@ class User {
   @Column({ nullable: true })
   public status: number;
 
-  @Column( { nullable: true } )
+  @Column({ nullable: true })
   public type: string;
-
-  @Column()
-  public password: string;
 }
 
 export default User;

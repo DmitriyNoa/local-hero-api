@@ -1,29 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
-import { comparePassword } from './encryption';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  constructor() {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
-    const compare = await comparePassword(pass, user.password);
-    if (user && compare) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
+    return { username, pass };
   }
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async login(credentials: any) {
+    const { username, password } = credentials;
+
+    const formBody2 = new URLSearchParams();
+    formBody2.append('username', username);
+    formBody2.append('password', password);
+    formBody2.append('grant_type', 'password');
+    formBody2.append('client_id', process.env.KEYCLOAK_CLIENT_ID);
+    formBody2.append('client_secret', process.env.KEYCLOAK_SECRET);
+
+    try {
+      const authResult = await axios.post(
+        process.env.KEYCLOAK_TOKEN_URL,
+        formBody2.toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        },
+      );
+
+      return authResult.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
