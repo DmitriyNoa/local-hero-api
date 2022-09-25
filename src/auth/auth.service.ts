@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import axios from 'axios';
 
 @Injectable()
@@ -33,6 +33,25 @@ export class AuthService {
       return authResult.data;
     } catch (error) {
       throw new Error(error);
+    }
+  }
+
+  async authenticate(accessToken: string): Promise<any> {
+    const url = `${process.env.KEYCLOAK_BASE_URL}/realms/hero/protocol/openid-connect/userinfo`;
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      return {
+        id: response.data.sub,
+        username: response.data.preferred_username,
+      };
+    } catch (e) {
+      throw new UnauthorizedException(e.message);
     }
   }
 }

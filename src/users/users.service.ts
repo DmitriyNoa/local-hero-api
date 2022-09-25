@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import UserEntity from './user.entity';
@@ -163,6 +163,24 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
    */
 
   async findOne(username: string) {
-    return this.repository.findOne({ where: [{ user_id: username }] });
+    const ks = await getKCClient();
+
+    const kcUser = await ks.users.find({ username, realm: 'hero' });
+
+    if (kcUser && kcUser.length) {
+      const { username, email } = kcUser[0];
+
+      const profile = await this.repository.findOne({
+        where: [{ user_id: kcUser[0].id }],
+      });
+
+      return {
+        ...profile,
+        username,
+        email,
+      };
+    } else {
+      throw new NotFoundException(new Error('User not found'));
+    }
   }
 }

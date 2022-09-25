@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Hero, UsersService } from './users.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AuthenticationGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -19,9 +19,10 @@ export class UsersController {
     return await this.usersService.getHeroes();
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/:username')
+  @UseGuards(AuthenticationGuard)
   async getOne(@Param('username') username: string) {
+    console.log("Searching user");
     return await this.usersService.findOne(username);
   }
 
