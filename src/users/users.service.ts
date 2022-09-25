@@ -6,6 +6,8 @@ import { Coordinates } from '../help-requests/help-requests.service';
 import { Point } from 'geojson';
 
 import KcAdminClient from 'keycloak-admin';
+import UserDTO from './user.dto';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 export const getKCClient = async () => {
   const kcAdminClient = new KcAdminClient({
@@ -46,13 +48,15 @@ export interface Hero extends User {
 }
 
 @Injectable()
-export class UsersService {
+export class UsersService extends TypeOrmCrudService<UserEntity> {
   private heroes: Hero[] = [];
 
   constructor(
     @InjectRepository(UserEntity)
     private repository: Repository<UserEntity>,
-  ) {}
+  ) {
+    super(repository);
+  }
 
   async addUser(user: Hero) {
     const { password, username, email, firstName, lastName, ...restUser } =
@@ -162,7 +166,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
 
    */
 
-  async findOne(username: string) {
+  async findUser(username: string) {
     const ks = await getKCClient();
 
     const kcUser = await ks.users.find({ username, realm: 'hero' });
@@ -182,5 +186,23 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
     } else {
       throw new NotFoundException(new Error('User not found'));
     }
+  }
+
+  async updateUser(username: string, id: string, user: Partial<UserDTO>) {
+    const ks = await getKCClient();
+
+    if (user.firstName || user.lastName) {
+      await ks.users.update(
+        { id, realm: 'hero' },
+        { firstName: user.firstName, lastName: user.lastName },
+      );
+    }
+
+    await this.repository.update(
+      { user_id: id },
+      { avatar: user.avatar, type: user.type },
+    );
+
+    return user;
   }
 }

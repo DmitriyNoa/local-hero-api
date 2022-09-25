@@ -5,10 +5,13 @@ import {
   Get,
   Param,
   Post,
+  Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { Hero, UsersService } from './users.service';
 import { AuthenticationGuard } from '../auth/jwt-auth.guard';
+import UserDTO from './user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -22,13 +25,23 @@ export class UsersController {
   @Get('/:username')
   @UseGuards(AuthenticationGuard)
   async getOne(@Param('username') username: string) {
-    console.log("Searching user");
-    return await this.usersService.findOne(username);
+    return await this.usersService.findUser(username);
   }
 
   @Post()
   addUser(@Body() hero: Hero) {
     return this.usersService.addUser(hero);
+  }
+
+  @Put('/:username')
+  @UseGuards(AuthenticationGuard)
+  updateUser(
+    @Body() user: Partial<UserDTO>,
+    @Req() request: any,
+    @Param('username') username: string,
+  ) {
+    const { id } = request.user;
+    return this.usersService.updateUser(username, id, user);
   }
 
   @Delete()

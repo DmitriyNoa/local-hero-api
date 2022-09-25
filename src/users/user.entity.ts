@@ -33,6 +33,12 @@ class User {
 
   @Column({ nullable: true })
   public type: string;
+
+  @Column({ nullable: true })
+  public description: string;
+
+  @Column({ nullable: true })
+  public city: string;
 }
 
 export default User;
