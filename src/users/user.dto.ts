@@ -59,6 +59,16 @@ class UserDTO {
   @IsOptional()
   @IsString()
   public username: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  public description: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  public city: string;
 }
 
 export default UserDTO;
