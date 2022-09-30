@@ -5,10 +5,17 @@ import { HelpRequestsGateway } from './help-requests.gateway';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import UserEntity from '../users/user.entity';
 import { UsersModule } from '../users/users.module';
+import HelpRequestEntity from './help-request.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [HelpRequestsController],
   providers: [HelpRequestsService, HelpRequestsGateway],
-  imports: [TypeOrmModule.forFeature([UserEntity]), UsersModule],
+  exports: [HelpRequestsService],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, HelpRequestEntity]),
+    UsersModule,
+    AuthModule,
+  ],
 })
 export class HelpRequestsModule {}

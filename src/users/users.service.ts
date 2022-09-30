@@ -190,6 +190,34 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
     }
   }
 
+  async findUserProfile(username: string) {
+    const ks = await getKCClient();
+
+    const kcUser = await ks.users.find({ username, realm: 'hero' });
+
+    if (kcUser && kcUser.length) {
+      const { username, email, firstName, lastName } = kcUser[0];
+
+      const profile = await this.repository.findOne({
+        where: [{ user_id: kcUser[0].id }],
+      });
+
+      return profile;
+    } else {
+      throw new NotFoundException(new Error('User not found'));
+    }
+  }
+
+  async findOneOrFail(id: string): Promise<UserEntity> {
+    const user = await this.repository.findOne({ where: { user_id: id } });
+
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+
+    return user;
+  }
+
   async updateUser(username: string, id: string, user: Partial<UserDTO>) {
     const ks = await getKCClient();
 
