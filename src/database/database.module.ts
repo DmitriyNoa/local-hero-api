@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import UserEntity from '../users/user.entity';
-import HelpRequestEntity from "../help-requests/help-request.entity";
+import HelpRequestEntity from '../help-requests/help-request.entity';
+import CategoryEntity from '../categories/category.entity';
+import LanguageEntity from '../languages/language.entity';
+import HeroEntity from '../heroes/hero.entity';
 
 @Module({
   imports: [
@@ -30,7 +33,13 @@ import HelpRequestEntity from "../help-requests/help-request.entity";
           username: configService.get('POSTGRES_USER'),
           password: configService.get('POSTGRES_PASSWORD'),
           database: configService.get('POSTGRES_DB'),
-          entities: [UserEntity, HelpRequestEntity],
+          entities: [
+            UserEntity,
+            HelpRequestEntity,
+            CategoryEntity,
+            LanguageEntity,
+            HeroEntity,
+          ],
           synchronize: true,
         };
       },

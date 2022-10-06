@@ -3,7 +3,14 @@ import { Coordinates, HelpRequestsService } from './help-requests.service';
 import HelpRequestEntity from './help-request.entity';
 import HelpRequestDTO from './help-request.dto';
 import { AuthenticationGuard } from '../auth/jwt-auth.guard';
-import { Crud, CrudController, CrudRequest, Override, ParsedBody, ParsedRequest } from "@nestjsx/crud";
+import {
+  Crud,
+  CrudController,
+  CrudRequest,
+  Override,
+  ParsedBody,
+  ParsedRequest,
+} from '@nestjsx/crud';
 
 @Crud({
   model: {

@@ -1,5 +1,4 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
-import { Point } from 'geojson';
 
 @Entity()
 class User {
@@ -9,18 +8,6 @@ class User {
   @Column()
   @Index()
   public user_id: string;
-
-  @Index({ spatial: true })
-  @Column({
-    type: 'geography',
-    spatialFeatureType: 'Point',
-    srid: 4326,
-    nullable: true,
-  })
-  location: Point;
-
-  @Column({ nullable: true })
-  public radius: number;
 
   @Column({ default: 0 })
   public rank: number;

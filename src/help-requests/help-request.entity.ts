@@ -2,12 +2,14 @@ import {
   Column,
   Entity,
   Index,
-  JoinTable,
+  JoinTable, ManyToMany,
   ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+  PrimaryGeneratedColumn
+} from "typeorm";
 import { Point } from 'geojson';
 import UserEntity from '../users/user.entity';
+import Category from "../categories/category.entity";
+import LanguageEntity from "../languages/language.entity";
 
 @Entity({ name: 'help_requests' })
 class HelpRequestEntity {
@@ -51,6 +53,14 @@ class HelpRequestEntity {
 
   @Column({ nullable: true })
   public description: string;
+
+  @ManyToMany(() => Category, (category) => category.heroes)
+  @JoinTable()
+  categories: Category[];
+
+  @ManyToMany(() => LanguageEntity, (language) => language.heroes)
+  @JoinTable()
+  languages: LanguageEntity[];
 }
 
 export default HelpRequestEntity;

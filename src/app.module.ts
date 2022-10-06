@@ -6,6 +6,9 @@ import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
+import { LanguagesModule } from './languages/languages.module';
+import { HeroesModule } from './heroes/heroes.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -24,6 +27,9 @@ import * as Joi from '@hapi/joi';
       }),
     }),
     AuthModule,
+    CategoriesModule,
+    LanguagesModule,
+    HeroesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

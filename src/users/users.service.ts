@@ -74,16 +74,15 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
       credentials: [{ type: 'password', value: password, temporary: false }],
       enabled: true,
     });
-
+/*
     const pointObject: Point = {
       type: 'Point',
       coordinates: [user.longitude, user.latitude],
     };
-
+*/
     const heroCreated = await this.repository.create({
       ...restUser,
       user_id: kcUser.id,
-      location: pointObject,
     });
 
     await this.repository.save(heroCreated);

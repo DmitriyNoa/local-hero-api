@@ -83,8 +83,7 @@ export class HelpRequestsService extends TypeOrmCrudService<HelpRequestEntity> {
       throw new NotFoundException('User not found');
     }
 
-    const { location, ...restUser } = user;
-    return this.repo.find({ where: { requestUser: restUser } });
+    return this.repo.find({ where: { requestUser: user } });
   }
 
   async createHelpRequest(
