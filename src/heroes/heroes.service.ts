@@ -7,7 +7,6 @@ import { UsersService } from '../users/users.service';
 import { CategoriesService } from '../categories/categories.service';
 import { LanguagesService } from '../languages/languages.service';
 import HeroDTO from './hero.dto';
-import heroDto from './hero.dto';
 
 @Injectable()
 export class HeroesService extends TypeOrmCrudService<HeroEntity> {

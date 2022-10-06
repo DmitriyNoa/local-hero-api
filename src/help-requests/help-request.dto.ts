@@ -45,6 +45,20 @@ class HelpRequestDTO {
   @MaxLength(10)
   @MinLength(3)
   public tags: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @MaxLength(10)
+  @MinLength(3)
+  public categories: string[];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  @MaxLength(10)
+  @MinLength(3)
+  public languages: string[];
 }
 
 export default HelpRequestDTO;

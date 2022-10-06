@@ -7,6 +7,8 @@ import HelpRequestEntity from './help-request.entity';
 import HelpRequestDTO from './help-request.dto';
 import { Point } from 'geojson';
 import { CrudRequest } from '@nestjsx/crud';
+import { CategoriesService } from '../categories/categories.service';
+import { LanguagesService } from '../languages/languages.service';
 
 interface Hero {
   name: string;
@@ -66,6 +68,8 @@ export class HelpRequestsService extends TypeOrmCrudService<HelpRequestEntity> {
   constructor(
     @InjectRepository(HelpRequestEntity) repo: Repository<HelpRequestEntity>,
     private userService: UsersService,
+    private categoriesService: CategoriesService,
+    private languagesService: LanguagesService,
   ) {
     super(repo);
   }
@@ -83,7 +87,10 @@ export class HelpRequestsService extends TypeOrmCrudService<HelpRequestEntity> {
       throw new NotFoundException('User not found');
     }
 
-    return this.repo.find({ where: { requestUser: user } });
+    return this.repo.find({
+      where: { requestUser: user },
+      relations: ['categories', 'languages'],
+    });
   }
 
   async createHelpRequest(
@@ -113,15 +120,28 @@ export class HelpRequestsService extends TypeOrmCrudService<HelpRequestEntity> {
       newHelpRequest.location = pointObject;
     }
 
+    if (helpRequestDto.categories && helpRequestDto.categories.length > 0) {
+      const categories = await this.categoriesService.findByIds(
+        helpRequestDto.categories,
+      );
+
+      if (categories && categories.length) {
+        newHelpRequest.categories = categories;
+      }
+    }
+
+    if (helpRequestDto.languages && helpRequestDto.languages.length > 0) {
+      const languages = await this.languagesService.findByIds(
+        helpRequestDto.languages,
+      );
+
+      if (languages && languages.length > 0) {
+        newHelpRequest.languages = languages;
+      }
+    }
+
     const saved = this.repo.save(newHelpRequest);
 
     return saved;
-  }
-
-  createOne(
-    req: CrudUserRequest,
-    dto: DeepPartial<HelpRequestDTO>,
-  ): Promise<HelpRequestEntity> {
-    return super.createOne(req, dto);
   }
 }
