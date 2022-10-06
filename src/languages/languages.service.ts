@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, In, Repository } from 'typeorm';
 import { CrudRequest, GetManyDefaultResponse } from '@nestjsx/crud';
 import LanguageEntity from './language.entity';
 
@@ -24,5 +24,9 @@ export class LanguagesService extends TypeOrmCrudService<LanguageEntity> {
     req: CrudRequest,
   ): Promise<GetManyDefaultResponse<LanguageEntity> | LanguageEntity[]> {
     return super.getMany(req);
+  }
+
+  findByIds(ids: string[]): Promise<LanguageEntity[]> {
+    return this.repo.findBy({ id: In(ids) });
   }
 }

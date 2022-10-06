@@ -10,6 +10,7 @@ import { AuthModule } from '../auth/auth.module';
 @Module({
   controllers: [CategoriesController],
   providers: [CategoriesService],
+  exports: [CategoriesService],
   imports: [
     TypeOrmModule.forFeature([HelpRequestEntity, HeroEntity, CategoryEntity]),
     AuthModule,

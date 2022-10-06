@@ -1,12 +1,12 @@
 import {
   Column,
   Entity,
-  Index,
+  Index, JoinColumn,
   JoinTable,
   ManyToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+  PrimaryGeneratedColumn
+} from "typeorm";
 import Category from '../categories/category.entity';
 import LanguageEntity from '../languages/language.entity';
 import UserEntity from '../users/user.entity';
@@ -30,7 +30,7 @@ class Hero {
   languages: LanguageEntity[];
 
   @OneToOne(() => UserEntity)
-  @JoinTable()
+  @JoinColumn()
   user: UserEntity;
 
   @Index({ spatial: true })

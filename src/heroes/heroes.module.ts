@@ -6,6 +6,11 @@ import HelpRequestEntity from '../help-requests/help-request.entity';
 import LanguageEntity from '../languages/language.entity';
 import CategoryEntity from '../categories/category.entity';
 import UserEntity from '../users/user.entity';
+import { AuthModule } from '../auth/auth.module';
+import { UsersModule } from '../users/users.module';
+import HeroEntity from './hero.entity';
+import { LanguagesModule } from '../languages/languages.module';
+import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
   providers: [HeroesService],
@@ -16,7 +21,12 @@ import UserEntity from '../users/user.entity';
       CategoryEntity,
       LanguageEntity,
       UserEntity,
+      HeroEntity,
     ]),
+    AuthModule,
+    UsersModule,
+    LanguagesModule,
+    CategoriesModule,
   ],
 })
 export class HeroesModule {}

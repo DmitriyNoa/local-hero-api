@@ -10,6 +10,7 @@ import { AuthModule } from '../auth/auth.module';
 @Module({
   providers: [LanguagesService],
   controllers: [LanguagesController],
+  exports: [LanguagesService],
   imports: [
     TypeOrmModule.forFeature([HelpRequestEntity, HeroEntity, LanguageEntity]),
     AuthModule,
