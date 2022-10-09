@@ -39,6 +39,7 @@ export class CategoriesController implements CrudController<CategoryEntity> {
     return this.service.createOne(crudRequest, categoryDTO);
   }
 
+  @Override()
   getManyBase(
     req: CrudRequest,
   ): Promise<GetManyDefaultResponse<Category> | Category[]> {

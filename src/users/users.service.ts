@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import UserEntity from './user.entity';
 import { Coordinates } from '../help-requests/help-requests.service';
-import { Point } from 'geojson';
+
 
 import KcAdminClient from 'keycloak-admin';
 import UserDTO from './user.dto';
@@ -59,6 +59,7 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
   }
 
   async addUser(user: Hero) {
+    console.log("user", user);
     const { password, username, email, firstName, lastName, ...restUser } =
       user;
 
@@ -74,12 +75,7 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
       credentials: [{ type: 'password', value: password, temporary: false }],
       enabled: true,
     });
-/*
-    const pointObject: Point = {
-      type: 'Point',
-      coordinates: [user.longitude, user.latitude],
-    };
-*/
+
     const heroCreated = await this.repository.create({
       ...restUser,
       user_id: kcUser.id,
@@ -217,7 +213,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
     return user;
   }
 
-  async updateUser(username: string, id: string, user: Partial<UserDTO>) {
+  async updateUser(id: string, user: Partial<UserDTO>) {
     const ks = await getKCClient();
 
     if (user.firstName || user.lastName) {
@@ -226,6 +222,8 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
         { firstName: user.firstName, lastName: user.lastName },
       );
     }
+
+    console.log("Updating user", user);
 
     await this.repository.update(
       { user_id: id },

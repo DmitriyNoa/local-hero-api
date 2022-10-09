@@ -2,6 +2,7 @@ import { Controller, Req, UseGuards } from '@nestjs/common';
 import { AuthenticationGuard } from '../auth/jwt-auth.guard';
 import {
   Crud,
+  CrudController,
   CrudRequest,
   Override,
   ParsedBody,
@@ -9,24 +10,31 @@ import {
 } from '@nestjsx/crud';
 import HeroEntity from './hero.entity';
 import { HeroesService } from './heroes.service';
-import HeroDTO from "./hero.dto";
+import HeroDTO from './hero.dto';
+import { Request } from 'express';
 
 @Crud({
   model: {
     type: HeroEntity,
-  },
-  params: {
-    id: {
-      type: 'string',
-      primary: true,
-      field: 'id',
-    },
   },
 })
 @UseGuards(AuthenticationGuard)
 @Controller('heroes')
 export class HeroesController {
   constructor(public service: HeroesService) {}
+
+  get base(): CrudController<HeroEntity> {
+    return this;
+  }
+
+  @Override()
+  getOne(
+    @ParsedBody() heroDTO: HeroDTO,
+    @ParsedRequest() crudRequest: CrudRequest,
+    @Req() request: Request,
+  ): Promise<HeroEntity> {
+    return this.service.getHero(request);
+  }
 
   @Override()
   createOne(

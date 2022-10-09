@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsNumber,
@@ -7,6 +7,25 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+interface Location {
+  lat: string;
+  lng: string;
+}
+
+interface LocationData {
+  data: {
+    description: string;
+  };
+  details: {
+    geometry: {
+      location: Location;
+      viewport: {
+        northeast: Location;
+        southwest: Location;
+      };
+    };
+  };
+}
 
 class HeroDTO {
   @ApiPropertyOptional()
@@ -40,14 +59,12 @@ class HeroDTO {
   @IsString()
   public locationDetails: string;
 
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  public name: string;
-
   @ApiPropertyOptional()
   @IsNumber()
   public radius: string;
+
+  @ApiPropertyOptional()
+  public location: LocationData;
 }
 
 export default HeroDTO;

@@ -1,12 +1,13 @@
 import {
   Column,
   Entity,
-  Index, JoinColumn,
+  Index,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   OneToOne,
-  PrimaryGeneratedColumn
-} from "typeorm";
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import Category from '../categories/category.entity';
 import LanguageEntity from '../languages/language.entity';
 import UserEntity from '../users/user.entity';
@@ -16,10 +17,6 @@ import { Point } from 'geojson';
 class Hero {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
-
-  @Column()
-  @Index()
-  public name: string;
 
   @ManyToMany(() => Category, (category) => category.heroes)
   @JoinTable()
