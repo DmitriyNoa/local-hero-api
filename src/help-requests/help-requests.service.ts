@@ -140,6 +140,20 @@ export class HelpRequestsService extends TypeOrmCrudService<HelpRequestEntity> {
       }
     }
 
+    // If hero location is provided create geometry object and save location
+    if (helpRequestDto.location) {
+      const pointObject: Point = {
+        type: 'Point',
+        coordinates: [
+          helpRequestDto.location.details.geometry.location.lng,
+          helpRequestDto.location.details.geometry.location.lat,
+        ],
+      };
+
+      newHelpRequest.location = pointObject;
+      newHelpRequest.locationMeta = helpRequestDto.location.data.description;
+    }
+
     const saved = this.repo.save(newHelpRequest);
 
     return saved;

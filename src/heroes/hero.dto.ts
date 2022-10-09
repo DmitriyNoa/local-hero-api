@@ -7,12 +7,12 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-interface Location {
+export interface Location {
   lat: string;
   lng: string;
 }
 
-interface LocationData {
+export interface LocationData {
   data: {
     description: string;
   };

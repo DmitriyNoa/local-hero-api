@@ -6,6 +6,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { LocationData } from '../heroes/hero.dto';
 
 class HelpRequestDTO {
   @ApiPropertyOptional()
@@ -59,6 +60,9 @@ class HelpRequestDTO {
   @MaxLength(10)
   @MinLength(3)
   public languages: string[];
+
+  @ApiPropertyOptional()
+  public location: LocationData;
 }
 
 export default HelpRequestDTO;
