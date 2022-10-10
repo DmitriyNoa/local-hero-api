@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import HeroEntity from './hero.entity';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CategoriesService } from '../categories/categories.service';
 import { LanguagesService } from '../languages/languages.service';
 import HeroDTO from './hero.dto';
 import { Point } from 'geojson';
+import { Coordinates } from '../help-requests/help-requests.service';
 
 @Injectable()
 export class HeroesService extends TypeOrmCrudService<HeroEntity> {
@@ -15,7 +16,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
     @InjectRepository(HeroEntity) repo: Repository<HeroEntity>,
     private userService: UsersService,
     private categoriesService: CategoriesService,
-    private languagesService: LanguagesService
+    private languagesService: LanguagesService,
   ) {
     super(repo);
   }
@@ -78,5 +79,27 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
     await this.userService.updateUser(user.user_id, { type: 'Hero' });
 
     return savedHero;
+  }
+
+  async getClosestHeroes(location: string) {
+    const myDataSource = new DataSource({
+      type: 'postgres',
+      host: process.env.POSTGRES_HOST,
+      port: 5432,
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
+    });
+
+    const appDataSource = await myDataSource.initialize();
+    const queryRunner = await appDataSource.createQueryRunner();
+
+    const results = await queryRunner.manager
+      .query(`SELECT * from "hero"  INNER JOIN "user" ON "hero"."userId" = "user"."id" WHERE ST_Distance(
+ location,
+  '${location}'::geography
+  ) < 5000`);
+
+    return results;
   }
 }

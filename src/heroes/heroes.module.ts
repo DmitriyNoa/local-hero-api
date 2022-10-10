@@ -11,10 +11,11 @@ import { UsersModule } from '../users/users.module';
 import HeroEntity from './hero.entity';
 import { LanguagesModule } from '../languages/languages.module';
 import { CategoriesModule } from '../categories/categories.module';
+import { HeroesSearchController } from './heroes-search.controller';
 
 @Module({
   providers: [HeroesService],
-  controllers: [HeroesController],
+  controllers: [HeroesController, HeroesSearchController],
   imports: [
     TypeOrmModule.forFeature([
       HelpRequestEntity,

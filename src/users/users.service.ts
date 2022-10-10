@@ -113,7 +113,7 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
       .query(`SELECT * from "user" WHERE ST_Distance(
  location,
   'SRID=4326;POINT(${helpRequest.lng} ${helpRequest.lat})'::geography
-  ) < "user".radius;`);
+  ) < 10000`);
 
     return results;
   }
@@ -222,8 +222,6 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
         { firstName: user.firstName, lastName: user.lastName },
       );
     }
-
-    console.log("Updating user", user);
 
     await this.repository.update(
       { user_id: id },
