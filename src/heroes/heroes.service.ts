@@ -8,7 +8,7 @@ import { CategoriesService } from '../categories/categories.service';
 import { LanguagesService } from '../languages/languages.service';
 import HeroDTO from './hero.dto';
 import { Point } from 'geojson';
-import { Coordinates } from '../help-requests/help-requests.service';
+import { getDistance } from 'geolib';
 
 @Injectable()
 export class HeroesService extends TypeOrmCrudService<HeroEntity> {
@@ -72,6 +72,37 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
 
       hero.location = pointObject;
       hero.locationDetails = heroDTO.location.data.description;
+
+      // Find northeast location radius
+      const radiusNortheast = getDistance(
+        {
+          lat: heroDTO.location.details.geometry.location.lat,
+          lng: heroDTO.location.details.geometry.location.lng,
+        },
+        {
+          lat: heroDTO.location.details.geometry.viewport.northeast.lat,
+          lng: heroDTO.location.details.geometry.viewport.northeast.lng,
+        },
+      );
+
+      // Find southwest location radius
+      const radiusSouthwest = getDistance(
+        {
+          lat: heroDTO.location.details.geometry.location.lat,
+          lng: heroDTO.location.details.geometry.location.lng,
+        },
+        {
+          lat: heroDTO.location.details.geometry.viewport.southwest.lat,
+          lng: heroDTO.location.details.geometry.viewport.southwest.lng,
+        },
+      );
+
+      //Take the biggest radius in meters
+      const radius = Math.max(radiusNortheast, radiusSouthwest);
+
+      if (radius) {
+        hero.radius = radius;
+      }
     }
 
     const savedHero = await this.repo.save(hero);
