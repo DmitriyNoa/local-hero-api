@@ -6,7 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CategoriesService } from '../categories/categories.service';
 import { LanguagesService } from '../languages/languages.service';
-import HeroDTO from './hero.dto';
+import HeroDTO, { Location } from "./hero.dto";
 import { Point } from 'geojson';
 import { getDistance } from 'geolib';
 
@@ -112,7 +112,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
     return savedHero;
   }
 
-  async getClosestHeroes(location: string) {
+  async getClosestHeroes(requestLocation: Location) {
     const myDataSource = new DataSource({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -127,9 +127,9 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
 
     const results = await queryRunner.manager
       .query(`SELECT * from "hero"  INNER JOIN "user" ON "hero"."userId" = "user"."id" WHERE ST_Distance(
- location,
-  '${location}'::geography
-  ) < 5000`);
+                        location,
+                        'SRID=4326;POINT(${requestLocation.lng} ${requestLocation.lat})'::geography
+                        ) < radius`);
 
     return results;
   }
