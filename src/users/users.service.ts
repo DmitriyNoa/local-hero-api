@@ -4,7 +4,6 @@ import { DataSource, Repository } from 'typeorm';
 import UserEntity from './user.entity';
 import { Coordinates } from '../help-requests/help-requests.service';
 
-
 import KcAdminClient from 'keycloak-admin';
 import UserDTO from './user.dto';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
@@ -59,7 +58,6 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
   }
 
   async addUser(user: Hero) {
-    console.log("user", user);
     const { password, username, email, firstName, lastName, ...restUser } =
       user;
 
@@ -234,5 +232,19 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
     );
 
     return user;
+  }
+
+  async getKCUsersByIDs(ids: string[]) {
+    const ks = await getKCClient();
+    const usersRequests = ids.map((id) =>
+      ks.users.findOne({ id, realm: 'hero' }),
+    );
+    const users = await Promise.all(usersRequests);
+
+    return users.map((user) => ({
+      user_id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    }));
   }
 }

@@ -6,7 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CategoriesService } from '../categories/categories.service';
 import { LanguagesService } from '../languages/languages.service';
-import HeroDTO, { Location } from "./hero.dto";
+import HeroDTO, { Location } from './hero.dto';
 import { Point } from 'geojson';
 import { getDistance } from 'geolib';
 
@@ -130,7 +130,18 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
                         location,
                         'SRID=4326;POINT(${requestLocation.lng} ${requestLocation.lat})'::geography
                         ) < radius`);
+    const IDs = results.map((user) => user.user_id);
+    const users = await this.userService.getKCUsersByIDs(IDs);
+    const fullHeroUsers = results.map((hero) => {
+      const heroUser = users.find((user) => user.user_id === hero.user_id);
 
-    return results;
+      if (heroUser) {
+        return { ...hero, ...heroUser };
+      }
+
+      return hero;
+    });
+
+    return fullHeroUsers;
   }
 }
