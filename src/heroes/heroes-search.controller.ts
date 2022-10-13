@@ -12,4 +12,9 @@ export class HeroesSearchController {
   getHeroesByLocation(@Body() location: Location) {
     return this.service.getClosestHeroes(location);
   }
+
+  @Get('/help-request/:requestId/heroes')
+  getHeroesByHelpRequestID(@Param('requestId') helpRequestID: string) {
+    return this.service.getHeroesByHelpRequestID(helpRequestID);
+  }
 }

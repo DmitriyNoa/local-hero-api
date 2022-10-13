@@ -12,6 +12,7 @@ import HeroEntity from './hero.entity';
 import { LanguagesModule } from '../languages/languages.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { HeroesSearchController } from './heroes-search.controller';
+import { HelpRequestsModule } from '../help-requests/help-requests.module';
 
 @Module({
   providers: [HeroesService],
@@ -26,6 +27,7 @@ import { HeroesSearchController } from './heroes-search.controller';
     ]),
     AuthModule,
     forwardRef(() => UsersModule),
+    forwardRef(() => HelpRequestsModule),
     LanguagesModule,
     CategoriesModule,
   ],

@@ -1,14 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import HeroEntity from './hero.entity';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { CategoriesService } from '../categories/categories.service';
 import { LanguagesService } from '../languages/languages.service';
 import HeroDTO, { Location } from './hero.dto';
 import { Point } from 'geojson';
 import { getDistance } from 'geolib';
+import { HelpRequestsService } from '../help-requests/help-requests.service';
 
 @Injectable()
 export class HeroesService extends TypeOrmCrudService<HeroEntity> {
@@ -17,6 +18,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
     private userService: UsersService,
     private categoriesService: CategoriesService,
     private languagesService: LanguagesService,
+    private helpRequestService: HelpRequestsService,
   ) {
     super(repo);
   }
@@ -126,22 +128,93 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
     const queryRunner = await appDataSource.createQueryRunner();
 
     const results = await queryRunner.manager
-      .query(`SELECT * from "hero"  INNER JOIN "user" ON "hero"."userId" = "user"."id" WHERE ST_Distance(
+      .query(`SELECT "hero"."id", "user"."avatar", "hero"."userId", "hero"."userId", "user"."user_id" from "hero"  INNER JOIN "user" ON "hero"."userId" = "user"."id" WHERE ST_Distance(
                         location,
                         'SRID=4326;POINT(${requestLocation.lng} ${requestLocation.lat})'::geography
                         ) < radius`);
-    const IDs = results.map((user) => user.user_id);
-    const users = await this.userService.getKCUsersByIDs(IDs);
+    const heroUserIDs = results.map((user) => user.user_id);
+    const users = await this.userService.getKCUsersByIDs(heroUserIDs);
+    const heroes = results.map((hero) => this.getHeroByIDOrFail(hero.id));
+
+    // TODO: Move this into a single SQL query on top
+    const heroesData = await Promise.all(heroes);
+
     const fullHeroUsers = results.map((hero) => {
+      let resultHero = hero;
       const heroUser = users.find((user) => user.user_id === hero.user_id);
+      const heroData = heroesData.find((heroData) => heroData.id === hero.id);
 
       if (heroUser) {
-        return { ...hero, ...heroUser };
+        resultHero = { ...hero, ...heroUser };
       }
 
-      return hero;
+      if (heroData) {
+        resultHero = {
+          ...resultHero,
+          categories: heroData.categories,
+          languages: heroData.languages,
+        };
+      }
+
+      return resultHero;
     });
 
     return fullHeroUsers;
+  }
+
+  async getHeroesByHelpRequestID(id: string) {
+    const helpRequest = await this.helpRequestService.findOne({
+      where: { id },
+      relations: ['categories', 'languages'],
+    });
+
+    const matchingHeroes = await this.repo
+      .createQueryBuilder('heroes')
+      .innerJoinAndSelect('heroes.categories', 'categories')
+      .innerJoinAndSelect('heroes.languages', 'languages')
+      .innerJoinAndSelect('heroes.user', 'user')
+      .where(
+        `ST_Distance(
+                        heroes.location,
+                        ST_GeomFromGeoJSON(:requestLocation)
+                        ) < heroes.radius`,
+        { requestLocation: JSON.stringify(helpRequest.location) },
+      )
+      .andWhere(`categories.id IN (:...requestCategories)`, {
+        requestCategories: helpRequest.categories.map((cat) => cat.id),
+      })
+      .andWhere(`languages.id IN (:...requestLanguages)`, {
+        requestLanguages: helpRequest.languages.map((lang) => lang.id),
+      })
+      .getMany();
+
+    const heroUserIDs = matchingHeroes.map((hero) => hero.user.user_id);
+    const users = await this.userService.getKCUsersByIDs(heroUserIDs);
+
+    const matchingHeroesWithUserData = matchingHeroes.map((hero) => {
+      let resultHero = hero;
+      const heroUser = users.find((user) => user.user_id === hero.user.user_id);
+
+      if (heroUser) {
+        resultHero = { ...hero, ...heroUser };
+      }
+
+      return resultHero;
+    });
+
+    return matchingHeroesWithUserData;
+  }
+
+  async getHeroByIDOrFail(id: string) {
+    const hero = this.repo.findOne({
+      where: { id },
+      relations: ['categories', 'languages'],
+    });
+
+    if (!hero) {
+      throw new NotFoundException('Hero not found');
+    }
+
+    return hero;
   }
 }
