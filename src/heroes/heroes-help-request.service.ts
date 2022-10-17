@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import HelpRequestHeroesEntity from '../help-requests/help-request-heroes.entity';
 import { HelpRequestsService } from '../help-requests/help-requests.service';
 import { HeroesService } from './heroes.service';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHeroesEntity> {
@@ -13,6 +14,7 @@ export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHero
     repo: Repository<HelpRequestHeroesEntity>,
     private helpRequestService: HelpRequestsService,
     private heroService: HeroesService,
+    private userService: UsersService,
   ) {
     super(repo);
   }
@@ -58,9 +60,33 @@ export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHero
     // TODO: Investigate why
     const { location, ...resetHero } = hero;
 
-    return this.repo.find({
+    const heroHelpRequests = await this.repo.find({
       where: { heroes: resetHero },
       relations: ['helpRequests', 'helpRequests.requestUser'],
     });
+
+    const heroUserIDs = heroHelpRequests.map(
+      (heroRequest) => heroRequest.helpRequests.requestUser.userId,
+    );
+    const users = await this.userService.getKCUsersByIDs(heroUserIDs);
+
+    const helpRequestsWithUserData = heroHelpRequests.map((heroRequest) => {
+      let resultHero = {};
+      const currentRequestUser = heroRequest.helpRequests.requestUser;
+      const requestUser = users.find(
+        (user) => user.userId === heroRequest.helpRequests.requestUser.userId,
+      );
+
+      if (requestUser) {
+        resultHero = {
+          ...heroRequest,
+          requestUser: { ...currentRequestUser, ...requestUser },
+        };
+      }
+
+      return resultHero;
+    });
+
+    return helpRequestsWithUserData;
   }
 }

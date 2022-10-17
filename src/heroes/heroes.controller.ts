@@ -53,8 +53,8 @@ export class HeroesController {
   @Patch('/:heroId/help-requests/:helpRequestId')
   updateHeroHelp(
     @Body() { status }: { status: 'pending' | 'rejected' | 'accepted' },
-    @Param(':heroId') heroId: string,
-    @Param(':helpRequestId') helpRequestId: string,
+    @Param('heroId') heroId: string,
+    @Param('helpRequestId') helpRequestId: string,
   ): Promise<any> {
     return this.heroHelpRequestService.updateHeroHelp(helpRequestId, status);
   }
