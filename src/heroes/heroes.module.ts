@@ -13,9 +13,11 @@ import { LanguagesModule } from '../languages/languages.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { HeroesSearchController } from './heroes-search.controller';
 import { HelpRequestsModule } from '../help-requests/help-requests.module';
+import { HeroesHelpRequestService } from './heroes-help-request.service';
+import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
 
 @Module({
-  providers: [HeroesService],
+  providers: [HeroesService, HeroesHelpRequestService],
   controllers: [HeroesController, HeroesSearchController],
   imports: [
     TypeOrmModule.forFeature([
@@ -24,6 +26,7 @@ import { HelpRequestsModule } from '../help-requests/help-requests.module';
       LanguageEntity,
       UserEntity,
       HeroEntity,
+      HelpRequestHeroEntity,
     ]),
     AuthModule,
     forwardRef(() => UsersModule),
@@ -31,5 +34,6 @@ import { HelpRequestsModule } from '../help-requests/help-requests.module';
     LanguagesModule,
     CategoriesModule,
   ],
+  exports: [HeroesService, HeroesHelpRequestService],
 })
 export class HeroesModule {}

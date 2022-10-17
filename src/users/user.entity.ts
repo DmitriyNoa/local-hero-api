@@ -7,7 +7,7 @@ class User {
 
   @Column()
   @Index()
-  public user_id: string;
+  public userId: string;
 
   @Column({ default: 0 })
   public rank: number;

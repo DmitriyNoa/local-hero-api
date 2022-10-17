@@ -23,10 +23,19 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
     super(repo);
   }
 
-  async getHero(request: any) {
+  async getHero(id: string) {
+    const hero = await this.repo.findOne({ where: { id } });
+
+    return hero;
+  }
+
+  async getUserHero(request: any) {
     const userId = request.user.id;
     const user = await this.userService.findOneOrFail(userId);
-    const hero = await this.repo.findOne({ where: user });
+    const hero = await this.repo.findOne({
+      where: { user },
+      relations: ['user', 'categories', 'languages'],
+    });
 
     return hero;
   }
@@ -109,7 +118,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
 
     const savedHero = await this.repo.save(hero);
 
-    await this.userService.updateUser(user.user_id, { type: 'Hero' });
+    await this.userService.updateUser(user.userId, { type: 'Hero' });
 
     return savedHero;
   }
@@ -141,7 +150,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
 
     const fullHeroUsers = results.map((hero) => {
       let resultHero = hero;
-      const heroUser = users.find((user) => user.user_id === hero.user_id);
+      const heroUser = users.find((user) => user.userId === hero.user_id);
       const heroData = heroesData.find((heroData) => heroData.id === hero.id);
 
       if (heroUser) {
@@ -188,12 +197,12 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
       })
       .getMany();
 
-    const heroUserIDs = matchingHeroes.map((hero) => hero.user.user_id);
+    const heroUserIDs = matchingHeroes.map((hero) => hero.user.userId);
     const users = await this.userService.getKCUsersByIDs(heroUserIDs);
 
     const matchingHeroesWithUserData = matchingHeroes.map((hero) => {
       let resultHero = hero;
-      const heroUser = users.find((user) => user.user_id === hero.user.user_id);
+      const heroUser = users.find((user) => user.userId === hero.user.userId);
 
       if (heroUser) {
         resultHero = { ...hero, ...heroUser };

@@ -1,47 +1,61 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AuthenticationGuard } from '../auth/jwt-auth.guard';
 import {
-  Crud,
-  CrudController,
-  CrudRequest,
-  Override,
-  ParsedBody,
-  ParsedRequest,
-} from '@nestjsx/crud';
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthenticationGuard } from '../auth/jwt-auth.guard';
+import { CrudRequest, ParsedRequest } from '@nestjsx/crud';
 import HeroEntity from './hero.entity';
 import { HeroesService } from './heroes.service';
 import HeroDTO from './hero.dto';
-import { Request } from 'express';
+import { HeroesHelpRequestService } from './heroes-help-request.service';
 
-@Crud({
-  model: {
-    type: HeroEntity,
-  },
-})
 @UseGuards(AuthenticationGuard)
-@Controller('heroes')
+@Controller('/heroes')
 export class HeroesController {
-  constructor(public service: HeroesService) {}
+  constructor(
+    public service: HeroesService,
+    public heroHelpRequestService: HeroesHelpRequestService,
+  ) {}
 
-  get base(): CrudController<HeroEntity> {
-    return this;
+  @Get('/:heroId')
+  getHero(@Param('heroId') heroId: string): Promise<HeroEntity> {
+    return this.service.getHero(heroId);
   }
 
-  @Override()
-  getOne(
-    @ParsedBody() heroDTO: HeroDTO,
-    @ParsedRequest() crudRequest: CrudRequest,
-    @Req() request: Request,
-  ): Promise<HeroEntity> {
-    return this.service.getHero(request);
-  }
-
-  @Override()
+  @Post()
   createOne(
-    @ParsedBody() heroDTO: HeroDTO,
+    @Body() heroDTO: HeroDTO,
     @ParsedRequest() crudRequest: CrudRequest,
     @Req() request: any,
   ): Promise<HeroEntity> {
     return this.service.createHero(heroDTO, request);
+  }
+
+  @Post('/:heroId/help-requests')
+  requestHeroHelp(
+    @Body() { helpRequestId }: { helpRequestId: string },
+    @Param('heroId') heroId: string,
+  ): Promise<any> {
+    return this.heroHelpRequestService.requestHeroHelp(heroId, helpRequestId);
+  }
+
+  @Get('/:heroId/help-requests')
+  getHeroHelpRequests(@Param('heroId') heroId: string): Promise<any> {
+    return this.heroHelpRequestService.getHeroHelpRequests(heroId);
+  }
+
+  @Patch('/:heroId/help-requests/:helpRequestId')
+  updateHeroHelp(
+    @Body() { status }: { status: 'pending' | 'rejected' | 'accepted' },
+    @Param(':heroId') heroId: string,
+    @Param(':helpRequestId') helpRequestId: string,
+  ): Promise<any> {
+    return this.heroHelpRequestService.updateHeroHelp(helpRequestId, status);
   }
 }

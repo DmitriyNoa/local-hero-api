@@ -6,6 +6,7 @@ import HelpRequestEntity from '../help-requests/help-request.entity';
 import CategoryEntity from '../categories/category.entity';
 import LanguageEntity from '../languages/language.entity';
 import HeroEntity from '../heroes/hero.entity';
+import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
 
 @Module({
   imports: [
@@ -13,19 +14,6 @@ import HeroEntity from '../heroes/hero.entity';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        console.log(
-          "configService.get('POSTGRES_HOST')",
-          configService.get('POSTGRES_HOST'),
-        );
-        console.log(
-          "configService.get('POSTGRES_USER')",
-          configService.get('POSTGRES_USER'),
-        );
-        console.log(
-          "configService.get('POSTGRES_PASSWORD')",
-          configService.get('POSTGRES_PASSWORD'),
-        );
-
         return {
           type: 'postgres',
           host: configService.get('POSTGRES_HOST'),
@@ -39,6 +27,7 @@ import HeroEntity from '../heroes/hero.entity';
             CategoryEntity,
             LanguageEntity,
             HeroEntity,
+            HelpRequestHeroEntity,
           ],
           synchronize: true,
         };

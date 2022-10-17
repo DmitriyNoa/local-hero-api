@@ -89,7 +89,7 @@ export class HelpRequestsService extends TypeOrmCrudService<HelpRequestEntity> {
 
     return this.repo.find({
       where: { requestUser: user },
-      relations: ['categories', 'languages'],
+      relations: ['categories', 'languages', 'requestUser'],
     });
   }
 

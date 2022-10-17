@@ -76,7 +76,7 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
 
     const heroCreated = await this.repository.create({
       ...restUser,
-      user_id: kcUser.id,
+      userId: kcUser.id,
     });
 
     await this.repository.save(heroCreated);
@@ -168,7 +168,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
       const { username, email, firstName, lastName } = kcUser[0];
 
       const profile = await this.repository.findOne({
-        where: [{ user_id: kcUser[0].id }],
+        where: [{ userId: kcUser[0].id }],
       });
 
       return {
@@ -192,7 +192,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
       const { username, email, firstName, lastName } = kcUser[0];
 
       const profile = await this.repository.findOne({
-        where: [{ user_id: kcUser[0].id }],
+        where: [{ userId: kcUser[0].id }],
       });
 
       return profile;
@@ -202,7 +202,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
   }
 
   async findOneOrFail(id: string): Promise<UserEntity> {
-    const user = await this.repository.findOne({ where: { user_id: id } });
+    const user = await this.repository.findOne({ where: { userId: id } });
 
     if (!user) {
       throw new NotFoundException('user not found');
@@ -222,7 +222,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
     }
 
     await this.repository.update(
-      { user_id: id },
+      { userId: id },
       {
         avatar: user.avatar,
         type: user.type,
@@ -242,7 +242,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
     const users = await Promise.all(usersRequests);
 
     return users.map((user) => ({
-      user_id: user.id,
+      userId: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
     }));

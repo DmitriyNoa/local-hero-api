@@ -12,6 +12,7 @@ import Category from '../categories/category.entity';
 import LanguageEntity from '../languages/language.entity';
 import UserEntity from '../users/user.entity';
 import { Point } from 'geojson';
+import HelpRequestHeroesEntity from '../help-requests/help-request-heroes.entity';
 
 @Entity()
 class Hero {
@@ -47,6 +48,13 @@ class Hero {
 
   @Column({ nullable: true })
   public description: string;
+
+  @JoinTable()
+  @ManyToMany(
+    () => HelpRequestHeroesEntity,
+    (helpRequest) => helpRequest.heroes,
+  )
+  helpRequests: HelpRequestHeroesEntity[];
 }
 
 export default Hero;
