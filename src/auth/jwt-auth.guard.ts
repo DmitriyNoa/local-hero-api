@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request } from 'express';
 
@@ -8,8 +14,11 @@ export class AuthenticationGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
+    const client = context.switchToWs().getClient();
 
-    const header = request.header('Authorization');
+    const header =
+      client?.handshake?.headers?.authorization ||
+      request.header('Authorization');
 
     if (!header) {
       throw new HttpException(

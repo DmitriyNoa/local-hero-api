@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { LanguagesModule } from './languages/languages.module';
 import { HeroesModule } from './heroes/heroes.module';
+import { ChatModule } from './chat/chat.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -30,6 +31,7 @@ import * as Joi from '@hapi/joi';
     CategoriesModule,
     LanguagesModule,
     HeroesModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

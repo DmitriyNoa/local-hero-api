@@ -1,4 +1,12 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import ChatEntity from '../chat/chat.entity';
 
 @Entity()
 class User {
@@ -26,6 +34,10 @@ class User {
 
   @Column({ nullable: true })
   public city: string;
+
+  @ManyToMany(() => ChatEntity, (chat) => chat.users)
+  @JoinTable()
+  chats: ChatEntity[];
 }
 
 export default User;

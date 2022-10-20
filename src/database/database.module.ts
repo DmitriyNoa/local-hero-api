@@ -7,6 +7,8 @@ import CategoryEntity from '../categories/category.entity';
 import LanguageEntity from '../languages/language.entity';
 import HeroEntity from '../heroes/hero.entity';
 import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
+import ChatEntity from '../chat/chat.entity';
+import MessageEntity from '../chat/message.entity';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
             LanguageEntity,
             HeroEntity,
             HelpRequestHeroEntity,
+            ChatEntity,
+            MessageEntity,
           ],
           synchronize: true,
         };
