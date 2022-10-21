@@ -4,9 +4,9 @@ import {
   Index,
   JoinTable,
   ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+  ManyToOne, OneToMany,
+  PrimaryGeneratedColumn
+} from "typeorm";
 import { Point } from 'geojson';
 import UserEntity from '../users/user.entity';
 import Category from '../categories/category.entity';
@@ -64,11 +64,10 @@ class HelpRequestEntity {
   @JoinTable()
   languages: LanguageEntity[];
 
-  @ManyToMany(
+  @OneToMany(
     () => HelpRequestHeroesEntity,
     (helpRequests) => helpRequests.heroes,
   )
-  @JoinTable()
   heroes: HelpRequestHeroesEntity[];
 }
 

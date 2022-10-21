@@ -5,6 +5,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -49,11 +50,7 @@ class Hero {
   @Column({ nullable: true })
   public description: string;
 
-  @JoinTable()
-  @ManyToMany(
-    () => HelpRequestHeroesEntity,
-    (helpRequest) => helpRequest.heroes,
-  )
+  @OneToMany(() => HelpRequestHeroesEntity, (helpRequest) => helpRequest.heroes)
   helpRequests: HelpRequestHeroesEntity[];
 }
 

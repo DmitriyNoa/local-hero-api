@@ -12,6 +12,7 @@ import { CategoriesModule } from '../categories/categories.module';
 import { LanguagesModule } from '../languages/languages.module';
 import { UsersHeroController } from './users-hero.controller';
 import { HeroesModule } from '../heroes/heroes.module';
+import { ChatModule } from '../chat/chat.module';
 
 @Module({
   providers: [UsersService, AuthService, S3Service, HelpRequestsService],
@@ -21,6 +22,7 @@ import { HeroesModule } from '../heroes/heroes.module';
     forwardRef(() => CategoriesModule),
     forwardRef(() => LanguagesModule),
     forwardRef(() => HeroesModule),
+    forwardRef(() => ChatModule),
   ],
   exports: [UsersService],
 })

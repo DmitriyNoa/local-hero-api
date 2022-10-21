@@ -1,9 +1,23 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { ChatService } from './chat.service';
+import { MessageService } from './message.service';
+import { AuthenticationGuard } from '../auth/jwt-auth.guard';
 
-@Controller('chat')
+@Controller('chats')
+@UseGuards(AuthenticationGuard)
 export class ChatController {
-  @Get()
-  test() {
-    return 'Hello';
+  constructor(
+    private chatService: ChatService,
+    private messageService: MessageService,
+  ) {}
+
+  @Get('/:chatId')
+  getChat(@Param('chatId') chatId) {
+    return this.chatService.getChatByIdOrFail(chatId);
+  }
+
+  @Get('/:chatId/messages')
+  getChatMessages(@Param('chatId') chatId) {
+    return this.messageService.getChatMessages(chatId);
   }
 }

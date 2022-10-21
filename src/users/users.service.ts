@@ -61,6 +61,8 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
     const { password, username, email, firstName, lastName, ...restUser } =
       user;
 
+    console.log('Creating user');
+
     const ks = await getKCClient();
 
     const kcUser = await ks.users.create({
@@ -74,6 +76,8 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
       enabled: true,
     });
 
+    console.log('kcUser user', kcUser);
+
     const heroCreated = await this.repository.create({
       ...restUser,
       userId: kcUser.id,
@@ -81,9 +85,13 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
 
     await this.repository.save(heroCreated);
 
-    const pureHero = { ...heroCreated };
+    console.log('kcUser user', kcUser);
 
-    return pureHero;
+    const pureUser = { ...heroCreated };
+
+    console.log('pureUser user', pureUser);
+
+    return pureUser;
   }
 
   removeHero(id: string) {
@@ -214,6 +222,8 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
   async updateUser(id: string, user: Partial<UserDTO>) {
     const ks = await getKCClient();
 
+    console.log('updating user---', user);
+
     if (user.firstName || user.lastName) {
       await ks.users.update(
         { id, realm: 'hero' },
@@ -230,6 +240,8 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
         city: user.city,
       },
     );
+
+    console.log('updating user---', user);
 
     return user;
   }

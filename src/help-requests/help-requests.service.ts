@@ -158,4 +158,17 @@ export class HelpRequestsService extends TypeOrmCrudService<HelpRequestEntity> {
 
     return saved;
   }
+
+  async getRequestByIdOrFail(id: string) {
+    const helpRequest = await this.repo.findOne({
+      where: { id },
+      relations: ['requestUser'],
+    });
+
+    if (!helpRequest) {
+      throw new NotFoundException('Help request not found');
+    }
+
+    return helpRequest;
+  }
 }

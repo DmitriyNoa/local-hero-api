@@ -2,13 +2,13 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import UserEntity from '../users/user.entity';
 import MessageEntity from './message.entity';
+import HelpRequestEntity from '../help-requests/help-request.entity';
+import ChatToUsersEntity from './chat-users.entity';
 
 @Entity('chats')
 class ChatEntity {
@@ -18,13 +18,16 @@ class ChatEntity {
   @Column({ nullable: true })
   public description: string;
 
-  @ManyToMany(() => UserEntity, (user) => user.chats)
-  @JoinTable()
-  users: UserEntity[];
-
   @OneToMany(() => MessageEntity, (message) => message.chat)
   @JoinColumn()
   messages: MessageEntity[];
+
+  @OneToOne(() => HelpRequestEntity)
+  @JoinColumn()
+  helpRequest: HelpRequestEntity;
+
+  @OneToMany(() => ChatToUsersEntity, (chatToUsers) => chatToUsers.chat)
+  chatsToUsers: ChatToUsersEntity[];
 }
 
 export default ChatEntity;

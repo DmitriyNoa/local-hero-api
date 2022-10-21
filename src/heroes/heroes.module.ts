@@ -15,6 +15,7 @@ import { HeroesSearchController } from './heroes-search.controller';
 import { HelpRequestsModule } from '../help-requests/help-requests.module';
 import { HeroesHelpRequestService } from './heroes-help-request.service';
 import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
+import { ChatModule } from '../chat/chat.module';
 
 @Module({
   providers: [HeroesService, HeroesHelpRequestService],
@@ -33,6 +34,7 @@ import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
     forwardRef(() => HelpRequestsModule),
     LanguagesModule,
     CategoriesModule,
+    forwardRef(() => ChatModule),
   ],
   exports: [HeroesService, HeroesHelpRequestService],
 })

@@ -13,12 +13,14 @@ import { Hero, UsersService } from './users.service';
 import { AuthenticationGuard } from '../auth/jwt-auth.guard';
 import UserDTO from './user.dto';
 import { HelpRequestsService } from '../help-requests/help-requests.service';
+import { ChatService } from '../chat/chat.service';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
     private helpRequests: HelpRequestsService,
+    private chatService: ChatService,
   ) {}
 
   @Get()
@@ -36,6 +38,15 @@ export class UsersController {
   @UseGuards(AuthenticationGuard)
   async getUserRequests(@Param('username') username: string) {
     return await this.helpRequests.getUserRequests(username);
+  }
+
+  @Get('/:username/chats')
+  @UseGuards(AuthenticationGuard)
+  async getUserChats(
+    @Param('username') username: string,
+    @Req() request: any,
+  ) {
+    return await this.chatService.getUserChats(username);
   }
 
   @Post()

@@ -3,10 +3,11 @@ import {
   Entity,
   Index,
   JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+  ManyToMany, OneToMany,
+  PrimaryGeneratedColumn
+} from "typeorm";
 import ChatEntity from '../chat/chat.entity';
+import ChatToUsersEntity from "../chat/chat-users.entity";
 
 @Entity()
 class User {
@@ -35,9 +36,8 @@ class User {
   @Column({ nullable: true })
   public city: string;
 
-  @ManyToMany(() => ChatEntity, (chat) => chat.users)
-  @JoinTable()
-  chats: ChatEntity[];
+  @OneToMany(() => ChatToUsersEntity, (chatToUsers) => chatToUsers.user)
+  chatsToUsers: ChatToUsersEntity[];
 }
 
 export default User;

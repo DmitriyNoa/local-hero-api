@@ -14,13 +14,17 @@ import HeroEntity from './hero.entity';
 import { HeroesService } from './heroes.service';
 import HeroDTO from './hero.dto';
 import { HeroesHelpRequestService } from './heroes-help-request.service';
+import { ChatService } from '../chat/chat.service';
+import { HelpRequestsService } from '../help-requests/help-requests.service';
 
 @UseGuards(AuthenticationGuard)
 @Controller('/heroes')
 export class HeroesController {
   constructor(
     public service: HeroesService,
+    public chatService: ChatService,
     public heroHelpRequestService: HeroesHelpRequestService,
+    public helpRequestsService: HelpRequestsService,
   ) {}
 
   @Get('/:heroId')
@@ -51,11 +55,30 @@ export class HeroesController {
   }
 
   @Patch('/:heroId/help-requests/:helpRequestId')
-  updateHeroHelp(
+  async updateHeroHelp(
     @Body() { status }: { status: 'pending' | 'rejected' | 'accepted' },
     @Param('heroId') heroId: string,
     @Param('helpRequestId') helpRequestId: string,
   ): Promise<any> {
-    return this.heroHelpRequestService.updateHeroHelp(helpRequestId, status);
+    // set status of hero help request response
+    const updated = await this.heroHelpRequestService.updateHeroHelp(
+      helpRequestId,
+      status,
+    );
+
+    if (status === 'accepted') {
+      const hero = await this.service.getHero(heroId);
+
+      const helpRequest = await this.helpRequestsService.getRequestByIdOrFail(
+        helpRequestId,
+      );
+
+      await this.chatService.createHelpRequestChat(
+        [hero.user, helpRequest.requestUser],
+        helpRequest,
+      );
+    }
+
+    return updated;
   }
 }

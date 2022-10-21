@@ -14,11 +14,9 @@ class HelpRequestHeroEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @JoinTable()
   @ManyToOne(() => HelpRequestEntity, (helpRequest) => helpRequest.heroes)
   helpRequests: HelpRequestEntity;
 
-  @JoinTable()
   @ManyToOne(() => HeroEntity, (hero) => hero.helpRequests)
   heroes: HeroEntity;
 
