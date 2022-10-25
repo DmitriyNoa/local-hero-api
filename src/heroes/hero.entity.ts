@@ -50,8 +50,8 @@ class Hero {
   @Column({ nullable: true })
   public description: string;
 
-  @OneToMany(() => HelpRequestHeroesEntity, (helpRequest) => helpRequest.heroes)
-  helpRequests: HelpRequestHeroesEntity[];
+  @OneToMany(() => HelpRequestHeroesEntity, (helpRequest) => helpRequest.hero)
+  heroHelpRequests: HelpRequestHeroesEntity[];
 }
 
 export default Hero;

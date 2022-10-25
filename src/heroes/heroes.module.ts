@@ -16,6 +16,7 @@ import { HelpRequestsModule } from '../help-requests/help-requests.module';
 import { HeroesHelpRequestService } from './heroes-help-request.service';
 import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
 import { ChatModule } from '../chat/chat.module';
+import { ReviewsModule } from '../reviews/reviews.module';
 
 @Module({
   providers: [HeroesService, HeroesHelpRequestService],
@@ -35,6 +36,7 @@ import { ChatModule } from '../chat/chat.module';
     LanguagesModule,
     CategoriesModule,
     forwardRef(() => ChatModule),
+    ReviewsModule,
   ],
   exports: [HeroesService, HeroesHelpRequestService],
 })

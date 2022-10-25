@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Post,
   Req,
@@ -7,11 +6,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Express } from 'express';
 import { UsersService } from './users.service';
 import { S3Service } from '../services/s3.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthenticationGuard } from '../auth/jwt-auth.guard';
+import {
+  AuthenticatedRequest,
+  AuthenticationGuard,
+} from '../auth/jwt-auth.guard';
 import { ParsedBody } from '@nestjsx/crud';
 
 @Controller('user-media')
@@ -30,7 +31,7 @@ export class UsersMediaController {
   )
   uploadUSerMedia(
     @UploadedFile() file: any,
-    @Req() request: any,
+    @Req() request: AuthenticatedRequest,
     @ParsedBody() body: any,
   ) {
     return this.s3Service.uploadFile(file);

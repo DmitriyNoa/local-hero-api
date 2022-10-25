@@ -1,8 +1,6 @@
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,11 +12,11 @@ class HelpRequestHeroEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @ManyToOne(() => HelpRequestEntity, (helpRequest) => helpRequest.heroes)
-  helpRequests: HelpRequestEntity;
+  @ManyToOne(() => HelpRequestEntity, (helpRequest) => helpRequest.heroHelpRequests)
+  helpRequest: HelpRequestEntity;
 
-  @ManyToOne(() => HeroEntity, (hero) => hero.helpRequests)
-  heroes: HeroEntity;
+  @ManyToOne(() => HeroEntity, (hero) => hero.heroHelpRequests)
+  hero: HeroEntity;
 
   @Column({ nullable: true })
   public status: string;

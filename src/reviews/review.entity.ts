@@ -9,10 +9,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import UserEntity from '../users/user.entity';
-import ChatEntity from './chat.entity';
 
-@Entity('messages')
-class MessageEntity {
+@Entity('reviews')
+class ReviewEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -22,16 +21,16 @@ class MessageEntity {
   @Column({ nullable: true })
   public text: string;
 
-  @Column({ nullable: true })
-  public status: string;
+  @Column()
+  public rating: number;
 
   @ManyToOne(() => UserEntity)
   @JoinColumn()
   user: UserEntity;
 
-  @ManyToOne(() => ChatEntity, (chat) => chat.messages)
+  @ManyToOne(() => UserEntity)
   @JoinColumn()
-  chat: ChatEntity;
+  reviewer: UserEntity;
 
   @CreateDateColumn()
   createdAt: Date; // Creation date
@@ -43,4 +42,4 @@ class MessageEntity {
   deletedAt: Date; // Deletion date
 }
 
-export default MessageEntity;
+export default ReviewEntity;

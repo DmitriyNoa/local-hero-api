@@ -8,6 +8,13 @@ import {
 import { AuthService } from './auth.service';
 import { Request } from 'express';
 
+export interface AuthenticatedRequest extends Request {
+  user: {
+    id: string;
+    username: string;
+  };
+}
+
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   constructor(private readonly authenticationService: AuthService) {}

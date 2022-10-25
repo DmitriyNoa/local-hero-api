@@ -6,6 +6,7 @@ import HelpRequestHeroesEntity from '../help-requests/help-request-heroes.entity
 import { HelpRequestsService } from '../help-requests/help-requests.service';
 import { HeroesService } from './heroes.service';
 import { UsersService } from '../users/users.service';
+import HelpRequestEntity from "../help-requests/help-request.entity";
 
 @Injectable()
 export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHeroesEntity> {
@@ -35,8 +36,8 @@ export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHero
     }
 
     const heroHelpRequest = new HelpRequestHeroesEntity();
-    heroHelpRequest.heroes = hero;
-    heroHelpRequest.helpRequests = helpRequest;
+    heroHelpRequest.hero = hero;
+    heroHelpRequest.helpRequest = helpRequest;
     heroHelpRequest.status = 'pending';
 
     const createdHeroHelpRequest = await this.repo.save(heroHelpRequest);
@@ -45,12 +46,12 @@ export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHero
   }
 
   async updateHeroHelp(
-    helpRequestId: string,
+    helpRequest: HelpRequestEntity,
     status: 'pending' | 'rejected' | 'accepted',
   ) {
-    await this.repo.update({ id: helpRequestId }, { status });
+    await this.repo.update({ helpRequest }, { status });
 
-    return { helpRequestId, status };
+    return { status };
   }
 
   async getHeroHelpRequests(id: string) {
@@ -61,20 +62,20 @@ export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHero
     const { location, ...resetHero } = hero;
 
     const heroHelpRequests = await this.repo.find({
-      where: { heroes: resetHero },
-      relations: ['helpRequests', 'helpRequests.requestUser'],
+      where: { hero: resetHero },
+      relations: ['helpRequest', 'helpRequest.requestUser'],
     });
 
     const heroUserIDs = heroHelpRequests.map(
-      (heroRequest) => heroRequest.helpRequests.requestUser.userId,
+      (heroRequest) => heroRequest.helpRequest.requestUser.userId,
     );
     const users = await this.userService.getKCUsersByIDs(heroUserIDs);
 
     const helpRequestsWithUserData = heroHelpRequests.map((heroRequest) => {
       let resultHero = {};
-      const currentRequestUser = heroRequest.helpRequests.requestUser;
+      const currentRequestUser = heroRequest.helpRequest.requestUser;
       const requestUser = users.find(
-        (user) => user.userId === heroRequest.helpRequests.requestUser.userId,
+        (user) => user.userId === heroRequest.helpRequest.requestUser.userId,
       );
 
       if (requestUser) {

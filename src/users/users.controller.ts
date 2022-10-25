@@ -10,7 +10,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Hero, UsersService } from './users.service';
-import { AuthenticationGuard } from '../auth/jwt-auth.guard';
+import {
+  AuthenticatedRequest,
+  AuthenticationGuard,
+} from '../auth/jwt-auth.guard';
 import UserDTO from './user.dto';
 import { HelpRequestsService } from '../help-requests/help-requests.service';
 import { ChatService } from '../chat/chat.service';
@@ -44,7 +47,7 @@ export class UsersController {
   @UseGuards(AuthenticationGuard)
   async getUserChats(
     @Param('username') username: string,
-    @Req() request: any,
+    @Req() request: AuthenticatedRequest,
   ) {
     return await this.chatService.getUserChats(username);
   }
@@ -58,7 +61,7 @@ export class UsersController {
   @UseGuards(AuthenticationGuard)
   updateUser(
     @Body() user: Partial<UserDTO>,
-    @Req() request: any,
+    @Req() request: AuthenticatedRequest,
     @Param('username') username: string,
   ) {
     const { id } = request.user;

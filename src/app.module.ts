@@ -10,6 +10,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { LanguagesModule } from './languages/languages.module';
 import { HeroesModule } from './heroes/heroes.module';
 import { ChatModule } from './chat/chat.module';
+import { ReviewsModule } from './reviews/reviews.module';
 import * as Joi from '@hapi/joi';
 
 @Module({
@@ -32,6 +33,7 @@ import * as Joi from '@hapi/joi';
     LanguagesModule,
     HeroesModule,
     ChatModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

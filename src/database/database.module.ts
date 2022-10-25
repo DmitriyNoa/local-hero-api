@@ -10,6 +10,7 @@ import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
 import ChatEntity from '../chat/chat.entity';
 import MessageEntity from '../chat/message.entity';
 import ChatToUsersEntity from '../chat/chat-users.entity';
+import ReviewEntity from '../reviews/review.entity';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import ChatToUsersEntity from '../chat/chat-users.entity';
             ChatEntity,
             MessageEntity,
             ChatToUsersEntity,
+            ReviewEntity,
           ],
           synchronize: true,
         };

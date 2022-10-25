@@ -1,8 +1,11 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { Coordinates, HelpRequestsService } from './help-requests.service';
+import { Controller, Req, UseGuards } from '@nestjs/common';
+import { HelpRequestsService } from './help-requests.service';
 import HelpRequestEntity from './help-request.entity';
 import HelpRequestDTO from './help-request.dto';
-import { AuthenticationGuard } from '../auth/jwt-auth.guard';
+import {
+  AuthenticatedRequest,
+  AuthenticationGuard,
+} from '../auth/jwt-auth.guard';
 import {
   Crud,
   CrudController,
@@ -35,7 +38,7 @@ export class HelpRequestsController
   createOne(
     @ParsedBody() helpDTO: HelpRequestDTO,
     @ParsedRequest() crudRequest: CrudRequest,
-    @Req() request: any,
+    @Req() request: AuthenticatedRequest,
   ): Promise<HelpRequestEntity> {
     const { id } = request.user;
     return this.service.createHelpRequest(helpDTO, id);

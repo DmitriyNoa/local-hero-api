@@ -33,6 +33,10 @@ export class MessageService extends TypeOrmCrudService<MessageEntity> {
   async getChatMessages(chatId: string) {
     const chat = await this.chatService.getChatByIdOrFail(chatId);
 
-    return this.repo.find({ where: { chat }, relations: ['user', 'chat'] });
+    return this.repo.find({
+      where: { chat },
+      relations: ['user', 'chat'],
+      order: { createdAt: 'ASC' },
+    });
   }
 }

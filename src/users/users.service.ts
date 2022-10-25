@@ -222,8 +222,6 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
   async updateUser(id: string, user: Partial<UserDTO>) {
     const ks = await getKCClient();
 
-    console.log('updating user---', user);
-
     if (user.firstName || user.lastName) {
       await ks.users.update(
         { id, realm: 'hero' },
@@ -240,8 +238,6 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
         city: user.city,
       },
     );
-
-    console.log('updating user---', user);
 
     return user;
   }

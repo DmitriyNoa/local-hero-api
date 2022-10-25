@@ -8,7 +8,10 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { AuthenticationGuard } from '../auth/jwt-auth.guard';
+import {
+  AuthenticatedRequest,
+  AuthenticationGuard,
+} from '../auth/jwt-auth.guard';
 import LanguageEntity from './language.entity';
 import { LanguagesService } from './languages.service';
 
@@ -33,7 +36,7 @@ export class LanguagesController implements CrudController<LanguageEntity> {
   createOne(
     @ParsedBody() categoryDTO: LanguageEntity,
     @ParsedRequest() crudRequest: CrudRequest,
-    @Req() request: any,
+    @Req() request: AuthenticatedRequest,
   ): Promise<LanguageEntity> {
     return this.service.createOne(crudRequest, categoryDTO);
   }
