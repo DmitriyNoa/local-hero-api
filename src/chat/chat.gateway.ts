@@ -30,11 +30,6 @@ export class ChatGateway
     @Body() { message, chatId }: { message: string; chatId: string },
   ) {
     const { id } = request.user;
-
-    console.log('Incomming payload', payload);
-    console.log('Incomming message', message);
-    console.log('Incomming chatId', chatId);
-
     const savedMessage = await this.messageService.createMessage(
       message,
       id,
@@ -53,7 +48,6 @@ export class ChatGateway
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log('---new user connected----');
     this.logger.log(`--------Client connected: ${client.id}`);
     this.server.emit('users', []);
     return [];

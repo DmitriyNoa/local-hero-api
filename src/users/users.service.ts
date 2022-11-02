@@ -61,8 +61,6 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
     const { password, username, email, firstName, lastName, ...restUser } =
       user;
 
-    console.log('Creating user');
-
     const ks = await getKCClient();
 
     const kcUser = await ks.users.create({
@@ -76,8 +74,6 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
       enabled: true,
     });
 
-    console.log('kcUser user', kcUser);
-
     const heroCreated = await this.repository.create({
       ...restUser,
       userId: kcUser.id,
@@ -85,11 +81,7 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
 
     await this.repository.save(heroCreated);
 
-    console.log('kcUser user', kcUser);
-
     const pureUser = { ...heroCreated };
-
-    console.log('pureUser user', pureUser);
 
     return pureUser;
   }

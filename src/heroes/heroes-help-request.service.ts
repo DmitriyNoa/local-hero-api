@@ -6,7 +6,8 @@ import HelpRequestHeroesEntity from '../help-requests/help-request-heroes.entity
 import { HelpRequestsService } from '../help-requests/help-requests.service';
 import { HeroesService } from './heroes.service';
 import { UsersService } from '../users/users.service';
-import HelpRequestEntity from "../help-requests/help-request.entity";
+import HelpRequestEntity from '../help-requests/help-request.entity';
+import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
 
 @Injectable()
 export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHeroesEntity> {
@@ -46,12 +47,19 @@ export class HeroesHelpRequestService extends TypeOrmCrudService<HelpRequestHero
   }
 
   async updateHeroHelp(
-    helpRequest: HelpRequestEntity,
+    id: string,
     status: 'pending' | 'rejected' | 'accepted',
   ) {
-    await this.repo.update({ helpRequest }, { status });
+    await this.repo.update({ id }, { status });
 
     return { status };
+  }
+
+  async getHeroRequestByIdOrFail(id: string) {
+    return this.repo.findOne({
+      where: { id },
+      relations: ['helpRequest', 'helpRequest.requestUser'],
+    });
   }
 
   async getHeroHelpRequests(id: string) {

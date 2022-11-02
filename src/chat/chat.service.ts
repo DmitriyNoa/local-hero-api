@@ -4,9 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import ChatEntity from './chat.entity';
 import UserEntity from '../users/user.entity';
-import HelpRequestEntity from '../help-requests/help-request.entity';
 import ChatUsersEntity from './chat-users.entity';
 import { UsersService } from '../users/users.service';
+import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
 
 @Injectable()
 export class ChatService extends TypeOrmCrudService<ChatEntity> {
@@ -21,10 +21,10 @@ export class ChatService extends TypeOrmCrudService<ChatEntity> {
 
   async createHelpRequestChat(
     chatUsers: UserEntity[],
-    helpRequest: HelpRequestEntity,
+    helpRequest: HelpRequestHeroEntity,
   ) {
     const chat = new ChatEntity();
-    chat.description = helpRequest.description;
+    chat.description = helpRequest.helpRequest.description;
     chat.helpRequest = helpRequest;
 
     const createdChat = await this.repo.save(chat);
@@ -44,8 +44,14 @@ export class ChatService extends TypeOrmCrudService<ChatEntity> {
   }
 
   async getChatByIdOrFail(id: string) {
-    const chat = this.repo.findOne({
+    const chat = await this.repo.findOne({
       where: { id },
+      relations: [
+        'helpRequest',
+        'helpRequest.helpRequest',
+        'helpRequest.hero',
+        'helpRequest.hero.user',
+      ],
     });
 
     if (!chat) {
@@ -58,9 +64,15 @@ export class ChatService extends TypeOrmCrudService<ChatEntity> {
   async getUserChats(username: string) {
     const user = await this.userService.findUserProfile(username);
 
-    const chats = this.chatToUserRepo.find({
-      where: { user },
-      relations: ['chat', 'chat.helpRequest', 'chat.helpRequest.requestUser'],
+    const chats = await this.repo.find({
+      where: { chatsToUsers: { user } },
+      relations: [
+        'helpRequest',
+        'helpRequest.helpRequest',
+        'helpRequest.helpRequest.requestUser',
+        'helpRequest.hero',
+        'helpRequest.hero.user',
+      ],
     });
 
     return chats;

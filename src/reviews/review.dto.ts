@@ -19,6 +19,12 @@ class ReviewDTO {
   public text: string;
 
   @ApiProperty()
+  @IsString()
+  @MaxLength(100)
+  @MinLength(50)
+  public title: string;
+
+  @ApiProperty()
   @IsOptional()
   @IsString()
   public userId: string;

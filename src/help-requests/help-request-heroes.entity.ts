@@ -1,9 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import HeroEntity from '../heroes/hero.entity';
 import HelpRequestEntity from './help-request.entity';
 
@@ -12,7 +7,10 @@ class HelpRequestHeroEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @ManyToOne(() => HelpRequestEntity, (helpRequest) => helpRequest.heroHelpRequests)
+  @ManyToOne(
+    () => HelpRequestEntity,
+    (helpRequest) => helpRequest.heroHelpRequests,
+  )
   helpRequest: HelpRequestEntity;
 
   @ManyToOne(() => HeroEntity, (hero) => hero.heroHelpRequests)

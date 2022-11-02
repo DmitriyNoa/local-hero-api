@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import MessageEntity from './message.entity';
-import HelpRequestEntity from '../help-requests/help-request.entity';
 import ChatToUsersEntity from './chat-users.entity';
+import HelpRequestHeroEntity from '../help-requests/help-request-heroes.entity';
 
 @Entity('chats')
 class ChatEntity {
@@ -22,9 +22,9 @@ class ChatEntity {
   @JoinColumn()
   messages: MessageEntity[];
 
-  @OneToOne(() => HelpRequestEntity)
+  @OneToOne(() => HelpRequestHeroEntity)
   @JoinColumn()
-  helpRequest: HelpRequestEntity;
+  helpRequest: HelpRequestHeroEntity;
 
   @OneToMany(() => ChatToUsersEntity, (chatToUsers) => chatToUsers.chat)
   chatsToUsers: ChatToUsersEntity[];

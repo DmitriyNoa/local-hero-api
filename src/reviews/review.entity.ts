@@ -19,6 +19,9 @@ class ReviewEntity {
   public parentId: string;
 
   @Column({ nullable: true })
+  public title: string;
+
+  @Column({ nullable: true })
   public text: string;
 
   @Column()

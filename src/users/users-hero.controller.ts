@@ -11,7 +11,6 @@ export class UsersHeroController {
 
   @Get('/:username/hero')
   getOne(@Req() request: Request): Promise<HeroEntity> {
-    console.log("---user hero");
     return this.service.getUserHero(request);
   }
 }

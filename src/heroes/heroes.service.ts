@@ -177,7 +177,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
   async getHeroesByHelpRequestID(id: string) {
     const helpRequest = await this.helpRequestService.findOne({
       where: { id },
-      relations: ['categories', 'languages'],
+      relations: ['categories', 'languages', 'heroHelpRequests'],
     });
 
     const matchingHeroes = await this.repo
@@ -185,6 +185,11 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
       .innerJoinAndSelect('heroes.categories', 'categories')
       .innerJoinAndSelect('heroes.languages', 'languages')
       .innerJoinAndSelect('heroes.user', 'user')
+      .innerJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
+      .innerJoinAndSelect(
+        'heroHelpRequests.helpRequest',
+        'heroHelpRequestData',
+      )
       .where(
         `ST_Distance(
                         heroes.location,

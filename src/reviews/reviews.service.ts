@@ -28,6 +28,7 @@ export class ReviewsService {
     review.user = user;
     review.reviewer = reviewer;
     review.text = reviewDto.text;
+    review.title = reviewDto.title;
     review.rating = reviewDto.rating;
 
     const createdReview = await this.repo.save(review);
@@ -46,11 +47,28 @@ export class ReviewsService {
       order: { createdAt: 'DESC' },
     });
 
+    const heroUserIDs = reviews.map((review) => review.reviewer.userId);
+    const reviewers = await this.userService.getKCUsersByIDs(heroUserIDs);
+
     const total = reviews.reduce((sum, current) => sum + current.rating, 0);
+
+    const result = reviews.map((review) => {
+      const reviewUer = reviewers.find(
+        (user) => user.userId === review.reviewer.userId,
+      );
+
+      return {
+        ...review,
+        reviewerUserData: {
+          firstName: reviewUer.firstName,
+          lastName: reviewUer.lastName,
+        },
+      };
+    });
 
     return {
       averageRating: reviews.length > 0 ? total / reviews.length : 0,
-      reviews,
+      reviews: result,
     };
   }
 

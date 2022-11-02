@@ -62,7 +62,6 @@ export class HeroesController {
   @Get('/:heroId/reviews')
   async getHeroReviews(@Param('heroId') heroId: string): Promise<any> {
     const hero = await this.service.getHero(heroId);
-
     return this.reviewsService.getUserReviews(hero.user.id);
   }
 
@@ -73,12 +72,11 @@ export class HeroesController {
     @Param('helpRequestId') helpRequestId: string,
   ): Promise<any> {
     // set status of hero help request response
-    const helpRequest = await this.helpRequestsService.getRequestByIdOrFail(
-      helpRequestId,
-    );
+    const heroHelpRequest =
+      await this.heroHelpRequestService.getHeroRequestByIdOrFail(helpRequestId);
 
     const updated = await this.heroHelpRequestService.updateHeroHelp(
-      helpRequest,
+      heroHelpRequest.id,
       status,
     );
 
@@ -86,8 +84,8 @@ export class HeroesController {
       const hero = await this.service.getHero(heroId);
 
       await this.chatService.createHelpRequestChat(
-        [hero.user, helpRequest.requestUser],
-        helpRequest,
+        [hero.user, heroHelpRequest.helpRequest.requestUser],
+        heroHelpRequest,
       );
     }
 
