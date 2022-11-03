@@ -1,5 +1,6 @@
 import { Injectable, Req, Res } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class S3Service {
@@ -9,11 +10,17 @@ export class S3Service {
     secretAccessKey: process.env.AWS_S3_KEY_SECRET,
   });
 
+  async resize(file) {
+    return sharp(file).resize(320).jpeg().toBuffer();
+  }
+
   async uploadFile(file) {
     const { originalname } = file;
 
+    const resized = await this.resize(file.buffer);
+
     const fileLocation = await this.s3_upload(
-      file.buffer,
+      resized,
       this.AWS_S3_BUCKET,
       originalname,
       file.mimetype,
