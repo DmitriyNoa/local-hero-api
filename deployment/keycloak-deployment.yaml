@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak-deployment
+  namespace: local-hero
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: keycloak-deployment
+  template:
+    metadata:
+      labels:
+        app: keycloak-deployment
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak
+          args: ["start-dev"]
+          imagePullPolicy: "Always"
+          env:
+            - name: KEYCLOAK_USER
+              value: admin
+            - name: KEYCLOAK_PASSWORD
+              value: admin
+            - name: KC_DB
+              value: postgres
+            - name: KC_DB_URL
+              value: jdbc:postgresql://postgres:5432/keycloak
+            - name: KC_DB_USERNAME
+              value: postgres
+            - name: KC_DB_PASSWORD
+              value: postgres
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443

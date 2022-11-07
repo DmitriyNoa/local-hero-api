@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-development-service
+  namespace: local-hero
+  labels:
+    app: keycloak-deployment
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: http
+      nodePort: 30999
+  selector:
+    app: keycloak-deployment
+  type: NodePort

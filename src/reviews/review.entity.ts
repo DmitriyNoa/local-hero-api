@@ -24,7 +24,7 @@ class ReviewEntity {
   @Column({ nullable: true })
   public text: string;
 
-  @Column()
+  @Column({ type: 'float4', nullable: true })
   public rating: number;
 
   @ManyToOne(() => UserEntity)
