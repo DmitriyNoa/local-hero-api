@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: local-hero-api-postgres
+  namespace: local-hero
+spec:
+  serviceName: postgres-service
+  selector:
+    matchLabels:
+      app: local-hero-api-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: local-hero-api-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgis/postgis
+          env:
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_USER
+              value: postgres
+            - name: PGDATA
+              value: /data/pgdata
+            - name: POSTGRES_DB
+              value: local-hero
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: local-hero-api-postgres
+  namespace: local-hero
+  labels:
+    app: local-hero-api-postgres
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+  selector:
+    app: local-hero-api-postgres
+

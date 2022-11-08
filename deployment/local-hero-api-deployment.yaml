@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: extensions-api
+  name: local-hero-api
   namespace: local-hero
 spec:
   selector:
-    app: extensions-api
+    app: local-hero-api
   ports:
     - protocol: TCP
       port: 8000
@@ -16,28 +16,28 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: extensions-api
+  name: local-hero-api
   namespace: local-hero
   labels:
-    app: extensions-api
+    app: local-hero-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: extensions-api
+      app: local-hero-api
   template:
     metadata:
       labels:
-        app: extensions-api
+        app: local-hero-api
     spec:
       containers:
-        - name: extensions-api
-          image: dmitriynoa/nest-api:buildx-reviews
+        - name: local-hero-api
+          image: dmitriynoa/test-api:0.0.1
           envFrom:
             - secretRef:
-                name: extensions-api-secret
+                name: local-hero-api-secret
             - configMapRef:
-                name: postgres-config
+                name: local-hero-config
           ports:
             - containerPort: 3000
           imagePullPolicy: Always
