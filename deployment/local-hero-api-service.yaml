@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: local-hero-api-service
+  namespace: local-hero
+spec:
+  selector:
+    app: local-hero-api
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 3000
+      name: http

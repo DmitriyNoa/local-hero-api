@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: local-hero-ingress
+  namespace: local-hero
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "server: hide";
+      more_set_headers "X-Content-Type-Options: nosniff";
+      more_set_headers "X-Xss-Protection: 1";
+      more_set_headers "X-Forwarded-Proto: https";
+      more_set_headers "X-Forwarded-Scheme: https";
+      more_set_headers "X-Forwarded-Port: 443";
+spec:
+  defaultBackend:
+    service:
+      name: local-hero-api-service
+      port:
+        number: 3000
+  rules:
+    - host: api.local-champion.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: local-hero-api-service
+                port:
+                  number: 443
+    - host: auth.local-champion.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak-development-service
+                port:
+                  number: 443
+
+
+## TLS PART https://aws.amazon.com/blogs/security/tls-enabled-kubernetes-clusters-with-acm-private-ca-and-amazon-eks-2/

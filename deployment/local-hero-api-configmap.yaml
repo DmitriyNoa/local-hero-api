@@ -17,3 +17,5 @@ data:
   KEYCLOAK_REALM_NAME: "master"
   KEYCLOAK_TOKEN_URL: "http://keycloak-development-service.local-hero.svc.cluster.local:7777/realms/hero/protocol/openid-connect/token"
   AWS_S3_BUCKET: "local-hero-images"
+  KEYCLOAK_PROXY_ADDRESS_FORWARDING: "true"
+  KEYCLOAK_FRONTEND_URL: "https://auth.local-champion.com"
