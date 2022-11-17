@@ -9,6 +9,7 @@ import UserDTO from './user.dto';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 export const getKCClient = async () => {
+  console.log('Getting KS client');
   const kcAdminClient = new KcAdminClient({
     baseUrl: process.env.KEYCLOAK_BASE_URL,
     realmName: process.env.KEYCLOAK_REALM_NAME,
@@ -21,6 +22,8 @@ export const getKCClient = async () => {
     password: process.env.KEYCLOAK_PASSWORD,
     clientId: process.env.KEYCLOAK_ADMIN_CLIENT_ID,
   });
+
+  console.log('kcAdminClientt', kcAdminClient);
 
   return kcAdminClient;
 };
@@ -88,6 +91,15 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
 
   removeHero(id: string) {
     this.heroes = this.heroes.filter((hero) => hero.id !== id);
+  }
+
+  addPureUser(userId) {
+    const user = new UserEntity();
+
+    user.userId = userId;
+    user.type = 'User';
+
+    return this.repository.save(user);
   }
 
   getHeroes() {

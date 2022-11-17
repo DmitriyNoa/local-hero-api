@@ -20,9 +20,12 @@ spec:
     spec:
       containers:
         - name: keycloak
-          image: quay.io/keycloak/keycloak
+          image: dmitriynoa/custom-keycloak:0.0.1
           args: ["start-dev"]
           imagePullPolicy: "Always"
+          volumeMounts:
+            - mountPath: /opt/jboss/keycloak/themes/mobile
+              name: themes
           env:
             - name: KEYCLOAK_USER
               value: admin
@@ -51,3 +54,9 @@ spec:
               containerPort: 8080
             - name: https
               containerPort: 8443
+      volumes:
+        - name: themes
+          hostPath:
+            path: /Projects/Noa/local-hero-api/src/keycloak/themes
+
+

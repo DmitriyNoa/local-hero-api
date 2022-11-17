@@ -1,0 +1,4 @@
+FROM quay.io/keycloak/keycloak
+
+ADD ./src/keycloak/themes ./opt/keycloak/themes
+ADD ./src/keycloak/apple-social-identity-provider-1.0.2.jar ./opt/keycloak/providers

@@ -15,9 +15,12 @@ export class S3Service {
   }
 
   async uploadFile(file) {
+    console.log("--uploadFile", file);
     const { originalname } = file;
 
     const resized = await this.resize(file.buffer);
+
+    console.log("--resized", file);
 
     const fileLocation = await this.s3_upload(
       resized,
