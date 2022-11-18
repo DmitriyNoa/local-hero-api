@@ -9,7 +9,6 @@ import UserDTO from './user.dto';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 export const getKCClient = async () => {
-  console.log('Getting KS client');
   const kcAdminClient = new KcAdminClient({
     baseUrl: process.env.KEYCLOAK_BASE_URL,
     realmName: process.env.KEYCLOAK_REALM_NAME,
@@ -22,8 +21,6 @@ export const getKCClient = async () => {
     password: process.env.KEYCLOAK_PASSWORD,
     clientId: process.env.KEYCLOAK_ADMIN_CLIENT_ID,
   });
-
-  console.log('kcAdminClientt', kcAdminClient);
 
   return kcAdminClient;
 };
@@ -63,11 +60,10 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
   async addUser(user: Hero) {
     const { password, username, email, firstName, lastName, ...restUser } =
       user;
-
     const ks = await getKCClient();
 
     const kcUser = await ks.users.create({
-      realm: 'hero',
+      realm: 'LocalChampion',
       username: username,
       email: email,
       firstName,
@@ -174,7 +170,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
   async findUser(username: string) {
     const ks = await getKCClient();
 
-    const kcUser = await ks.users.find({ username, realm: 'hero' });
+    const kcUser = await ks.users.find({ username, realm: 'LocalChampion' });
 
     if (kcUser && kcUser.length) {
       const { username, email, firstName, lastName } = kcUser[0];
@@ -198,7 +194,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
   async findUserProfile(username: string) {
     const ks = await getKCClient();
 
-    const kcUser = await ks.users.find({ username, realm: 'hero' });
+    const kcUser = await ks.users.find({ username, realm: 'LocalChampion' });
 
     if (kcUser && kcUser.length) {
       const { username, email, firstName, lastName } = kcUser[0];
@@ -228,7 +224,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
 
     if (user.firstName || user.lastName) {
       await ks.users.update(
-        { id, realm: 'hero' },
+        { id, realm: 'LocalChampion' },
         { firstName: user.firstName, lastName: user.lastName },
       );
     }
@@ -249,7 +245,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
   async getKCUsersByIDs(ids: string[]) {
     const ks = await getKCClient();
     const usersRequests = ids.map((id) =>
-      ks.users.findOne({ id, realm: 'hero' }),
+      ks.users.findOne({ id, realm: 'LocalChampion' }),
     );
     const users = await Promise.all(usersRequests);
 

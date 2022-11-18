@@ -13,6 +13,7 @@ export class AuthService {
 
   async login(credentials: any) {
     const { username, password, token } = credentials;
+    console.log('performing login', credentials);
     if (token) {
       return await this.loginWithToken(token);
     }
@@ -42,8 +43,7 @@ export class AuthService {
   }
 
   async authenticate(accessToken: string): Promise<any> {
-    console.log('accessToken', accessToken);
-    const url = `${process.env.KEYCLOAK_BASE_URL}/realms/hero/protocol/openid-connect/userinfo`;
+    const url = `${process.env.KEYCLOAK_BASE_URL}/realms/LocalChampion/protocol/openid-connect/userinfo`;
 
     try {
       const response = await axios.get(url, {
@@ -52,14 +52,11 @@ export class AuthService {
         },
       });
 
-      console.log('response', response.data);
-
       return {
         id: response.data.sub,
         username: response.data.preferred_username,
       };
     } catch (e) {
-      console.log('auth error', e);
       throw new UnauthorizedException(e.message);
     }
   }
@@ -74,7 +71,6 @@ export class AuthService {
       });
 
       if (!existingUser) {
-        console.log('creating user');
         await this.userService.addPureUser(loginData.id);
       }
 
