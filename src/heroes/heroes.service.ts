@@ -185,11 +185,8 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
       .innerJoinAndSelect('heroes.categories', 'categories')
       .innerJoinAndSelect('heroes.languages', 'languages')
       .innerJoinAndSelect('heroes.user', 'user')
-      .innerJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
-      .innerJoinAndSelect(
-        'heroHelpRequests.helpRequest',
-        'heroHelpRequestData',
-      )
+      .leftJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
+      .leftJoinAndSelect('heroHelpRequests.helpRequest', 'heroHelpRequestData')
       .where(
         `ST_Distance(
                         heroes.location,
@@ -197,13 +194,15 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
                         ) < heroes.radius`,
         { requestLocation: JSON.stringify(helpRequest.location) },
       )
-      .andWhere(`categories.id IN (:...requestCategories)`, {
+      .where(`categories.id IN (:...requestCategories)`, {
         requestCategories: helpRequest.categories.map((cat) => cat.id),
       })
       .andWhere(`languages.id IN (:...requestLanguages)`, {
         requestLanguages: helpRequest.languages.map((lang) => lang.id),
       })
       .getMany();
+
+    console.log('-----matchingHeroes', matchingHeroes);
 
     const heroUserIDs = matchingHeroes.map((hero) => hero.user.userId);
     const users = await this.userService.getKCUsersByIDs(heroUserIDs);

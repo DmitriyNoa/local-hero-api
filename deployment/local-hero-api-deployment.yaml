@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: local-hero-api
-          image: dmitriynoa/test-api:0.0.5
+          image: dmitriynoa/test-api:0.0.7
           envFrom:
             - secretRef:
                 name: local-hero-api-secret

@@ -60,8 +60,9 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
   async addUser(user: Hero) {
     const { password, username, email, firstName, lastName, ...restUser } =
       user;
+    console.log("----ading user", username);
     const ks = await getKCClient();
-
+    console.log("----ks", ks);
     const kcUser = await ks.users.create({
       realm: 'LocalChampion',
       username: username,
