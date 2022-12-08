@@ -33,6 +33,8 @@ export class MessageService extends TypeOrmCrudService<MessageEntity> {
   async getChatMessages(chatId: string) {
     const chat = await this.chatService.getChatByIdOrFail(chatId);
 
+    console.log("getting messages", chat);
+
     // if any object with location object exists in query it fails with "invalid geometry" so have to remove it
     // investigate why. Removing help request for now as it includes geometry
     const { helpRequest, ...restFromChat } = chat;
