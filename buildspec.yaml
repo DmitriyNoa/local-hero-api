@@ -5,14 +5,12 @@ phases:
       nodejs: 16
   pre_build:
     commands:
-      - echo Installing yarn
-      - npm install -g yarn
       - echo Installing source NPM dependencies...
-      - yarn install
+      - npm install
   build:
     commands:
       - echo Build started on `date`
-      - yarn build
+      - npm run build
 artifacts:
   files:
     - dist/**/*
