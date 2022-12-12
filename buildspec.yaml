@@ -1,13 +1,17 @@
 version: 0.1
 phases:
+  yarn:
+    commands:
+      - echo Installing yarn
+      - npm install -g yarn
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
-      - npm install
+      - yarn install
   build:
     commands:
       - echo Build started on `date`
-      - npm run build
+      - yarn build
 artifacts:
   files:
     - dist/**/*
