@@ -13,6 +13,4 @@ phases:
       - npm run build
 artifacts:
   files:
-    - dist/**/*
-    - node_modules/**/*
-    - package.json
+    - '**/*'
