@@ -26,7 +26,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
   async getHero(id: string) {
     const hero = await this.repo.findOne({
       where: { id },
-      relations: ['user'],
+      relations: ['user', 'categories', 'languages'],
     });
 
     return hero;
