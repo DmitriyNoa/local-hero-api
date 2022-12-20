@@ -174,7 +174,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
     const kcUser = await ks.users.find({ username, realm: 'LocalChampion' });
 
     if (kcUser && kcUser.length) {
-      const { username, email, firstName, lastName } = kcUser[0];
+      const { username, email, firstName, lastName, attributes } = kcUser[0];
 
       const profile = await this.repository.findOne({
         where: [{ userId: kcUser[0].id }],
@@ -186,6 +186,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
         email,
         firstName,
         lastName,
+        attributes,
       };
     } else {
       throw new NotFoundException(new Error('User not found'));
