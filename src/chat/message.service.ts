@@ -54,7 +54,10 @@ export class MessageService extends TypeOrmCrudService<MessageEntity> {
 
       return {
         ...message,
-        user: usr,
+        user: {
+          ...message.user,
+          ...usr,
+        },
       };
     });
 
