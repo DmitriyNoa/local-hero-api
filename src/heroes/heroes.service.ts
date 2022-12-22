@@ -23,6 +23,16 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
     super(repo);
   }
 
+  async getTopHeroes() {
+    return this.repo
+      .createQueryBuilder('heroes')
+      .innerJoinAndSelect('heroes.categories', 'categories')
+      .innerJoinAndSelect('heroes.languages', 'languages')
+      .innerJoinAndSelect('heroes.user', 'user')
+      .leftJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
+      .getMany();
+  }
+
   async getHero(id: string) {
     const hero = await this.repo.findOne({
       where: { id },
@@ -201,8 +211,6 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
         requestLanguages: helpRequest.languages.map((lang) => lang.id),
       })
       .getMany();
-
-    console.log('-----matchingHeroes', matchingHeroes);
 
     const heroUserIDs = matchingHeroes.map((hero) => hero.user.userId);
     const users = await this.userService.getKCUsersByIDs(heroUserIDs);

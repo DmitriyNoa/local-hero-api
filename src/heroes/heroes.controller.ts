@@ -32,6 +32,11 @@ export class HeroesController {
     private reviewsService: ReviewsService,
   ) {}
 
+  @Get()
+  getTopHeroes(): Promise<HeroEntity[]> {
+    return this.service.getTopHeroes();
+  }
+
   @Get('/:heroId')
   getHero(@Param('heroId') heroId: string): Promise<HeroEntity> {
     return this.service.getHero(heroId);
