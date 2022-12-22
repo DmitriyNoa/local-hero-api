@@ -33,16 +33,31 @@ export class MessageService extends TypeOrmCrudService<MessageEntity> {
   async getChatMessages(chatId: string) {
     const chat = await this.chatService.getChatByIdOrFail(chatId);
 
-    console.log("getting messages", chat);
-
     // if any object with location object exists in query it fails with "invalid geometry" so have to remove it
     // investigate why. Removing help request for now as it includes geometry
     const { helpRequest, ...restFromChat } = chat;
 
-    return this.repo.find({
+    const messages = await this.repo.find({
       where: { chat: restFromChat },
       relations: ['user'],
       order: { createdAt: 'ASC' },
     });
+
+    const messagesUsers = messages.map((message) => {
+      return message?.user?.id;
+    });
+
+    const users = await this.userService.getKCUsersByIDs(messagesUsers);
+
+    const messagesWithUsers = messages.map((message) => {
+      const usr = users.find((user) => user.userId === message?.user?.userId);
+
+      return {
+        ...message,
+        user: usr,
+      };
+    });
+
+    return messagesWithUsers;
   }
 }

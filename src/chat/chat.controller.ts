@@ -18,7 +18,6 @@ export class ChatController {
 
   @Get('/:chatId/messages')
   getChatMessages(@Param('chatId') chatId) {
-    console.log("getting messages", chatId);
     return this.messageService.getChatMessages(chatId);
   }
 }

@@ -255,6 +255,7 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
       userId: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
+      attributes: user.attributes
     }));
   }
 }
