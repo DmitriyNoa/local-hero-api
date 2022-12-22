@@ -44,7 +44,7 @@ export class MessageService extends TypeOrmCrudService<MessageEntity> {
     });
 
     const messagesUsers = messages.map((message) => {
-      return message?.user?.id;
+      return message?.user?.userId;
     });
 
     const users = await this.userService.getKCUsersByIDs(messagesUsers);
