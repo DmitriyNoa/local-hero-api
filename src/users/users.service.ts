@@ -60,9 +60,8 @@ export class UsersService extends TypeOrmCrudService<UserEntity> {
   async addUser(user: Hero) {
     const { password, username, email, firstName, lastName, ...restUser } =
       user;
-    console.log("----ading user", username);
+
     const ks = await getKCClient();
-    console.log("----ks", ks);
     const kcUser = await ks.users.create({
       realm: 'LocalChampion',
       username: username,
@@ -255,7 +254,32 @@ ORDER BY foo.geog <-> ST_MakePoint(x,y)::geography;
       userId: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
-      attributes: user.attributes
+      attributes: user.attributes,
     }));
+  }
+
+  async enrichUsersWithKCInfo(userIDs, entitiesArray, accessor) {
+    const users = await this.getKCUsersByIDs(userIDs);
+
+    const matchingHeroesWithUserData = entitiesArray.map((entity) => {
+      let resultHero = entity;
+      const heroUser = users.find(
+        (user) => user.userId === entity[accessor].userId,
+      );
+
+      if (heroUser) {
+        resultHero = {
+          ...entity,
+          [accessor]: {
+            ...entity[accessor],
+            ...heroUser,
+          },
+        };
+      }
+
+      return resultHero;
+    });
+
+    return matchingHeroesWithUserData;
   }
 }

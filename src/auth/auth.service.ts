@@ -13,7 +13,6 @@ export class AuthService {
 
   async login(credentials: any) {
     const { username, password, token } = credentials;
-    console.log('performing login', credentials);
     if (token) {
       return await this.loginWithToken(token);
     }

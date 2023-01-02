@@ -49,7 +49,7 @@ export class S3Service {
 
       return s3Response.Location;
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 }

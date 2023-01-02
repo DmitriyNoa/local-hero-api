@@ -24,13 +24,24 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
   }
 
   async getTopHeroes() {
-    return this.repo
+    const topHeroes = await this.repo
       .createQueryBuilder('heroes')
       .innerJoinAndSelect('heroes.categories', 'categories')
       .innerJoinAndSelect('heroes.languages', 'languages')
       .innerJoinAndSelect('heroes.user', 'user')
       .leftJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
       .getMany();
+
+    const heroUserIDs = topHeroes.map((hero) => hero.user.userId);
+
+    const topHeroesWithUserMetadata =
+      await this.userService.enrichUsersWithKCInfo(
+        heroUserIDs,
+        topHeroes,
+        'user',
+      );
+
+    return topHeroesWithUserMetadata;
   }
 
   async getHero(id: string) {
