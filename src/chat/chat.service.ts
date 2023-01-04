@@ -75,6 +75,27 @@ export class ChatService extends TypeOrmCrudService<ChatEntity> {
       ],
     });
 
-    return chats;
+    const chatUsers = chats.map((chat) => {
+      return chat?.helpRequest?.helpRequest?.requestUser?.userId;
+    });
+
+    const users = await this.userService.getKCUsersByIDs(chatUsers);
+
+    const chatsWithUsers = chats.map((chat) => {
+      const usr = users.find(
+        (user) =>
+          user.userId === chat?.helpRequest?.helpRequest?.requestUser?.userId,
+      );
+
+      return {
+        ...chat,
+        user: {
+          ...usr,
+          ...chat?.helpRequest?.helpRequest?.requestUser,
+        },
+      };
+    });
+
+    return chatsWithUsers;
   }
 }
