@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import ChatEntity from '../chat/chat.entity';
 import ChatToUsersEntity from "../chat/chat-users.entity";
+import ReviewEntity from "../reviews/review.entity";
 
 @Entity()
 class User {
@@ -38,6 +39,10 @@ class User {
 
   @OneToMany(() => ChatToUsersEntity, (chatToUsers) => chatToUsers.user)
   chatsToUsers: ChatToUsersEntity[];
+
+  @ManyToMany(() => ReviewEntity, (review) => review.user)
+  @JoinTable()
+  reviews: ReviewEntity[];
 }
 
 export default User;

@@ -28,7 +28,6 @@ class ReviewEntity {
   public rating: number;
 
   @ManyToOne(() => UserEntity)
-  @JoinColumn()
   user: UserEntity;
 
   @ManyToOne(() => UserEntity)

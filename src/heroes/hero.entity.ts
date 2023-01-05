@@ -14,6 +14,7 @@ import LanguageEntity from '../languages/language.entity';
 import UserEntity from '../users/user.entity';
 import { Point } from 'geojson';
 import HelpRequestHeroesEntity from '../help-requests/help-request-heroes.entity';
+import ReviewEntity from "../reviews/review.entity";
 
 @Entity()
 class Hero {

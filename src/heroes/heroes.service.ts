@@ -29,6 +29,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
       .innerJoinAndSelect('heroes.categories', 'categories')
       .innerJoinAndSelect('heroes.languages', 'languages')
       .innerJoinAndSelect('heroes.user', 'user')
+      .innerJoinAndSelect('user.reviews', 'reviews')
       .leftJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
       .getMany();
 
