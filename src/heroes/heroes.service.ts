@@ -26,10 +26,10 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
   async getTopHeroes() {
     const topHeroes = await this.repo
       .createQueryBuilder('heroes')
-      .innerJoinAndSelect('heroes.categories', 'categories')
-      .innerJoinAndSelect('heroes.languages', 'languages')
-      .innerJoinAndSelect('heroes.user', 'user')
-      .innerJoinAndSelect('user.reviews', 'reviews')
+      .leftJoinAndSelect('heroes.categories', 'categories')
+      .leftJoinAndSelect('heroes.languages', 'languages')
+      .leftJoinAndSelect('heroes.user', 'user')
+      .leftJoinAndSelect('user.reviews', 'reviews')
       .leftJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
       .getMany();
 

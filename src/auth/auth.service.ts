@@ -13,10 +13,10 @@ export class AuthService {
 
   async login(credentials: any) {
     const { username, password, token } = credentials;
-    if (token) {
-      return await this.loginWithToken(token);
-    }
 
+    return await this.loginWithToken(token);
+
+    /*
     const formBody2 = new URLSearchParams();
     formBody2.append('username', username);
     formBody2.append('password', password);
@@ -39,6 +39,7 @@ export class AuthService {
     } catch (error) {
       throw new Error(error);
     }
+    */
   }
 
   async authenticate(accessToken: string): Promise<any> {
