@@ -27,7 +27,7 @@ class ReviewEntity {
   @Column({ type: 'float4', nullable: true })
   public rating: number;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, (user) => user.reviews)
   user: UserEntity;
 
   @ManyToOne(() => UserEntity)
