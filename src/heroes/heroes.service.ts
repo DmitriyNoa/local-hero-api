@@ -29,7 +29,7 @@ export class HeroesService extends TypeOrmCrudService<HeroEntity> {
       .leftJoinAndSelect('heroes.categories', 'categories')
       .leftJoinAndSelect('heroes.languages', 'languages')
       .leftJoinAndSelect('heroes.user', 'user')
-      .leftJoinAndSelect('heroes.user.reviews', 'reviews')
+      .leftJoinAndSelect('user.reviews', 'reviews')
       .leftJoinAndSelect('heroes.heroHelpRequests', 'heroHelpRequests')
       .getMany();
 
